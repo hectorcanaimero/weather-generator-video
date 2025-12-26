@@ -1,0 +1,227 @@
+import * as Minio from "minio";
+import fs from "fs";
+import path from "path";
+
+// MinIO client configuration
+const minioClient = new Minio.Client({
+  endPoint: process.env.MINIO_ENDPOINT || "localhost",
+  port: parseInt(process.env.MINIO_PORT || "9000"),
+  useSSL: process.env.MINIO_USE_SSL === "true",
+  accessKey: process.env.MINIO_ACCESS_KEY || "minioadmin",
+  secretKey: process.env.MINIO_SECRET_KEY || "minioadmin",
+});
+
+const BUCKET_NAME = process.env.MINIO_BUCKET || "weather-videos";
+
+/**
+ * Initialize MinIO bucket
+ */
+export async function initBucket(): Promise<boolean> {
+  try {
+    console.log(`🔗 Connecting to MinIO at ${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}...`);
+
+    const exists = await minioClient.bucketExists(BUCKET_NAME);
+
+    if (!exists) {
+      console.log(`📦 Creating MinIO bucket: ${BUCKET_NAME}`);
+      await minioClient.makeBucket(BUCKET_NAME, "us-east-1");
+
+      // Set bucket policy to allow public read access
+      const policy = {
+        Version: "2012-10-17",
+        Statement: [
+          {
+            Effect: "Allow",
+            Principal: { AWS: ["*"] },
+            Action: ["s3:GetObject"],
+            Resource: [`arn:aws:s3:::${BUCKET_NAME}/*`],
+          },
+        ],
+      };
+
+      await minioClient.setBucketPolicy(BUCKET_NAME, JSON.stringify(policy));
+      console.log(`✅ Bucket created and configured: ${BUCKET_NAME}`);
+    } else {
+      console.log(`✅ MinIO bucket already exists: ${BUCKET_NAME}`);
+    }
+    return true;
+  } catch (error) {
+    console.error(`❌ Error initializing MinIO bucket:`, error);
+    console.warn(`⚠️ Server will start without MinIO. Video upload will fail until MinIO is available.`);
+    console.warn(`⚠️ Please check your MinIO configuration in .env file`);
+    return false;
+  }
+}
+
+/**
+ * Upload video file to MinIO
+ */
+export async function uploadVideo(
+  filePath: string,
+  filename: string,
+  metadata: {
+    city: string;
+    temperature: number;
+    condition: string;
+    date: string;
+  }
+): Promise<{ url: string; etag: string }> {
+  try {
+    console.log(`📤 Uploading ${filename} to MinIO...`);
+
+    // Prepare metadata
+    const metaData = {
+      "Content-Type": "video/mp4",
+      "X-City": metadata.city,
+      "X-Temperature": metadata.temperature.toString(),
+      "X-Condition": metadata.condition,
+      "X-Date": metadata.date,
+      "X-Upload-Date": new Date().toISOString(),
+    };
+
+    // Upload file
+    const stats = fs.statSync(filePath);
+    const fileStream = fs.createReadStream(filePath);
+
+    const uploadInfo = await minioClient.putObject(
+      BUCKET_NAME,
+      filename,
+      fileStream,
+      stats.size,
+      metaData
+    );
+
+    // Generate public URL
+    const url = await getPublicUrl(filename);
+
+    console.log(`✅ Video uploaded successfully: ${filename}`);
+
+    return {
+      url,
+      etag: uploadInfo.etag,
+    };
+  } catch (error) {
+    console.error(`❌ Error uploading video to MinIO:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Get public URL for a file
+ */
+export async function getPublicUrl(filename: string): Promise<string> {
+  // For public buckets, construct the direct URL
+  const protocol = process.env.MINIO_USE_SSL === "true" ? "https" : "http";
+  const endpoint = process.env.MINIO_ENDPOINT || "localhost";
+  const port = process.env.MINIO_PORT || "9000";
+
+  // If using standard ports (80/443), don't include port in URL
+  const portSuffix =
+    (protocol === "http" && port === "80") ||
+    (protocol === "https" && port === "443")
+      ? ""
+      : `:${port}`;
+
+  return `${protocol}://${endpoint}${portSuffix}/${BUCKET_NAME}/${filename}`;
+}
+
+/**
+ * List recent videos (last N videos)
+ */
+export async function listRecentVideos(limit: number = 6): Promise<
+  Array<{
+    filename: string;
+    url: string;
+    size: number;
+    uploadDate: Date;
+    metadata: {
+      city?: string;
+      temperature?: string;
+      condition?: string;
+      date?: string;
+    };
+  }>
+> {
+  try {
+    console.log(`📋 Listing recent ${limit} videos from MinIO...`);
+
+    const objectsList: Array<{
+      name: string;
+      lastModified: Date;
+      size: number;
+    }> = [];
+
+    // Stream objects from bucket
+    const stream = minioClient.listObjectsV2(BUCKET_NAME, "", true);
+
+    for await (const obj of stream) {
+      if (obj.name && obj.name.endsWith(".mp4")) {
+        objectsList.push({
+          name: obj.name,
+          lastModified: obj.lastModified || new Date(),
+          size: obj.size || 0,
+        });
+      }
+    }
+
+    // Sort by last modified date (descending)
+    objectsList.sort((a, b) => b.lastModified.getTime() - a.lastModified.getTime());
+
+    // Take only the requested number
+    const recentObjects = objectsList.slice(0, limit);
+
+    // Fetch metadata for each object
+    const videosWithMetadata = await Promise.all(
+      recentObjects.map(async (obj) => {
+        try {
+          const stat = await minioClient.statObject(BUCKET_NAME, obj.name);
+          const url = await getPublicUrl(obj.name);
+
+          return {
+            filename: obj.name,
+            url,
+            size: obj.size,
+            uploadDate: obj.lastModified,
+            metadata: {
+              city: stat.metaData?.["x-city"],
+              temperature: stat.metaData?.["x-temperature"],
+              condition: stat.metaData?.["x-condition"],
+              date: stat.metaData?.["x-date"],
+            },
+          };
+        } catch (error) {
+          console.error(`Error fetching metadata for ${obj.name}:`, error);
+          const url = await getPublicUrl(obj.name);
+          return {
+            filename: obj.name,
+            url,
+            size: obj.size,
+            uploadDate: obj.lastModified,
+            metadata: {},
+          };
+        }
+      })
+    );
+
+    console.log(`✅ Found ${videosWithMetadata.length} recent videos`);
+    return videosWithMetadata;
+  } catch (error) {
+    console.error(`❌ Error listing videos from MinIO:`, error);
+    return [];
+  }
+}
+
+/**
+ * Delete a video from MinIO
+ */
+export async function deleteVideo(filename: string): Promise<void> {
+  try {
+    await minioClient.removeObject(BUCKET_NAME, filename);
+    console.log(`🗑️ Deleted video: ${filename}`);
+  } catch (error) {
+    console.error(`❌ Error deleting video:`, error);
+    throw error;
+  }
+}
+
+export { minioClient, BUCKET_NAME };

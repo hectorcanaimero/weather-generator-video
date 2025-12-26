@@ -1,0 +1,56 @@
+{
+  "name": "creem-year-review",
+  "version": "1.0.0",
+  "description": "My Remotion video",
+  "type": "module",
+  "repository": {},
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@google/genai": "^0.7.0",
+    "@remotion/animated-emoji": "4.0.384",
+    "@remotion/bundler": "4.0.384",
+    "@remotion/cli": "4.0.384",
+    "@remotion/fonts": "4.0.384",
+    "@remotion/google-fonts": "4.0.384",
+    "@remotion/lambda": "4.0.384",
+    "@remotion/lottie": "4.0.384",
+    "@remotion/renderer": "4.0.384",
+    "@remotion/tailwind-v4": "4.0.384",
+    "@remotion/zod-types": "4.0.384",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.18.2",
+    "lottie-web": "^5.13.0",
+    "minio": "^8.0.2",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "remotion": "4.0.384",
+    "tailwindcss": "4.0.0",
+    "zod": "3.22.3"
+  },
+  "devDependencies": {
+    "@remotion/eslint-config-flat": "4.0.384",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/minio": "^7.1.1",
+    "@types/node": "^22.10.2",
+    "@types/react": "19.0.0",
+    "@types/web": "0.0.166",
+    "eslint": "9.19.0",
+    "prettier": "3.6.0",
+    "tsx": "^4.19.2",
+    "typescript": "5.8.2"
+  },
+  "scripts": {
+    "dev": "remotion studio",
+    "server": "tsx server/index.ts",
+    "build": "remotion bundle",
+    "upgrade": "remotion upgrade",
+    "lint": "eslint src && tsc",
+    "generate:weather": "tsx scripts/generate-weather-images.ts"
+  },
+  "sideEffects": [
+    "*.css"
+  ]
+}

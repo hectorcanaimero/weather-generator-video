@@ -1,0 +1,14 @@
+[
+  {
+    "city": "CURITIBA",
+    "prompt": "Create a 45° top-down isometric miniature 3D diorama scene of CURITIBA, Brazil, featuring its iconic landmarks like the Oscar Niemeyer Museum, Wire Opera House, and Botanical Garden.\n\nStyle: Photorealistic 3D render with soft, refined textures, realistic PBR materials, gentle lifelike lighting and shadows, studio quality lighting, octane render aesthetic.\n\nWeather: Dark dramatic storm clouds looming above, lightning bolts striking, heavy rainfall visible, wet reflective surfaces on buildings and streets, dramatic moody lighting with occasional lightning flashes illuminating the scene. The storm should create an immersive atmospheric mood.\n\nComposition: Clean, minimalistic scene with a soft solid-colored background gradient (no sky, just gradient backdrop). The city should be a miniature model/diorama on a platform.\n\nIMPORTANT:\n- NO text, NO titles, NO labels, NO numbers on the image\n- Just the pure isometric city scene with weather\n- Vertical 1080x1920 dimension (portrait orientation)\n- Leave top 40% relatively clear for text overlay (buildings can be there but not too tall)\n- Focus detail in center and lower portions"
+  },
+  {
+    "city": "Tokyo",
+    "condition": "sunny"
+  },
+  {
+    "city": "Paris",
+    "condition": "rain"
+  }
+]
