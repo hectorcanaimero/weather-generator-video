@@ -101,6 +101,7 @@ async function generateWeatherImage(
 
 IMPORTANT:
 - NO text, NO titles, NO labels, NO numbers on the image
+- Focus on the most important points of interest in the city
 - Just the pure isometric city scene with weather
 - Vertical portrait orientation (9:16 aspect ratio)
 - Leave top 40% relatively clear for text overlay (buildings can be there but not too tall)
