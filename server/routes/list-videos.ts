@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const limit = parseInt(req.query.limit as string) || 6;
+    const limit = parseInt(req.query.limit as string) || 10;
     console.log(`📋 Fetching last ${limit} videos...`);
 
     const videos = await listRecentVideos(limit);

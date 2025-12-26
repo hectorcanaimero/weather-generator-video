@@ -179,7 +179,7 @@ downloadBtn.addEventListener('click', () => {
 // Load recent videos
 async function loadRecentVideos() {
   try {
-    const response = await fetch('/api/videos?limit=6');
+    const response = await fetch('/api/videos?limit=10');
     if (!response.ok) {
       throw new Error('Failed to fetch recent videos');
     }
