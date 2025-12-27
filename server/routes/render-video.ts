@@ -71,6 +71,17 @@ router.post("/", async (req, res) => {
         useAI: true,
         language,
       },
+      chromiumOptions: {
+        // @ts-ignore - Remotion types don't include all Puppeteer options
+        executablePath: "/usr/bin/chromium-browser",
+        args: [
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-dev-shm-usage",
+          "--disable-gpu",
+          "--single-process",
+        ],
+      },
     });
 
     console.log(`🎥 Rendering video...`);
@@ -87,12 +98,9 @@ router.post("/", async (req, res) => {
         useAI: true,
         language,
       },
-      browserExecutable: "/usr/bin/chromium-browser",
-      // browserExecutable: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
       chromiumOptions: {
         // @ts-ignore - Remotion types don't include all Puppeteer options
-        // args: ['--headless=new', '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
-        // executablePath: 'Chromium 143.0.7499.40 Alpine Linux',
+        executablePath: "/usr/bin/chromium-browser",
         args: [
           "--no-sandbox",
           "--disable-setuid-sandbox",
