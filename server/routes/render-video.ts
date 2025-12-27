@@ -1,13 +1,11 @@
 import express from "express";
-import { bundle } from "@remotion/bundler";
-import { renderMedia, selectComposition } from "@remotion/renderer";
-import path from "path";
-import { fileURLToPath } from "url";
-import fs from "fs";
-import { uploadVideo } from "../config/minio";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { getVideoRenderQueue, VideoRenderJobData } from "../config/queue.js";
+import { emitJobProgress } from "../lib/job-events.js";
+import {
+  checkDailyLimit,
+  incrementDailyCounter,
+  getTimeUntilReset,
+} from "../lib/rate-limiter.js";
 
 const router = express.Router();
 
@@ -39,105 +37,75 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    console.log(`🎬 Starting video render for ${city} (${language})...`);
+    // Check daily rate limit
+    const limitCheck = await checkDailyLimit();
 
-    // Paths
-    const projectRoot = path.join(__dirname, "../..");
-    const entryPoint = path.join(projectRoot, "src/index.ts");
-    const outputDir = path.join(projectRoot, "out");
-    const outputFilename = `weather-${city.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}.mp4`;
-    const outputPath = path.join(outputDir, outputFilename);
+    if (!limitCheck.isAllowed) {
+      const timeUntilReset = await getTimeUntilReset();
+      console.warn(
+        `⚠️  Daily limit reached: ${limitCheck.currentCount}/${limitCheck.limit}`
+      );
 
-    // Ensure output directory exists
-    if (!fs.existsSync(outputDir)) {
-      fs.mkdirSync(outputDir, { recursive: true });
+      return res.status(429).json({
+        error: "Daily video generation limit reached",
+        message: `You have reached the daily limit of ${limitCheck.limit} videos. Please try again later.`,
+        limit: limitCheck.limit,
+        currentCount: limitCheck.currentCount,
+        resetsAt: limitCheck.resetsAt.toISOString(),
+        resetsIn: {
+          hours: timeUntilReset.hours,
+          minutes: timeUntilReset.minutes,
+        },
+      });
     }
 
-    console.log(`📦 Bundling Remotion project...`);
-    const bundled = await bundle({
-      entryPoint,
-      webpackOverride: (config) => config,
+    console.log(`📋 Adding video render job to queue for ${city} (${language})...`);
+    console.log(
+      `📊 Daily usage: ${limitCheck.currentCount + 1}/${limitCheck.limit} videos`
+    );
+
+    // Get queue instance
+    const queue = getVideoRenderQueue();
+
+    // Prepare job data
+    const jobData: VideoRenderJobData = {
+      city,
+      weatherData,
+      imageFilename,
+      language,
+      requestedAt: new Date().toISOString(),
+    };
+
+    // Add job to queue
+    const job = await queue.add("render-video", jobData, {
+      jobId: `video-${city.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`,
     });
 
-    console.log(`🔍 Selecting composition...`);
-    const composition = await selectComposition({
-      serveUrl: bundled,
-      id: "Weather",
-      inputProps: {
-        city: weatherData.city,
-        temperature: weatherData.temperature,
-        condition: weatherData.condition,
-        date: weatherData.date,
-        useAI: true,
-        language,
+    console.log(`✅ Job added to queue: ${job.id}`);
+
+    // Increment daily counter
+    const newCount = await incrementDailyCounter();
+    console.log(`📈 Daily counter incremented: ${newCount}/${limitCheck.limit}`);
+
+    // Emit initial "pending" status
+    emitJobProgress(job.id!, "pending", 0, "Job queued and waiting to start");
+
+    // Return job ID immediately
+    return res.status(202).json({
+      jobId: job.id,
+      status: "pending",
+      message: "Video render job has been queued",
+      estimatedTime: "2-5 minutes",
+      dailyUsage: {
+        current: newCount,
+        limit: limitCheck.limit,
+        remaining: limitCheck.limit - newCount,
       },
-      chromiumOptions: {
-        // @ts-ignore - Remotion types don't include all Puppeteer options
-        args: [
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-          "--disable-dev-shm-usage",
-          "--disable-gpu",
-          "--single-process",
-        ],
-      },
-    });
-
-    console.log(`🎥 Rendering video...`);
-    await renderMedia({
-      composition,
-      serveUrl: bundled,
-      codec: "h264",
-      outputLocation: outputPath,
-      inputProps: {
-        city: weatherData.city,
-        temperature: weatherData.temperature,
-        condition: weatherData.condition,
-        date: weatherData.date,
-        useAI: true,
-        language,
-      },
-      chromiumOptions: {
-        // @ts-ignore - Remotion types don't include all Puppeteer options
-        args: [
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-          "--disable-dev-shm-usage",
-          "--disable-gpu",
-        ],
-      },
-    });
-
-    console.log(`✅ Video rendered successfully: ${outputFilename}`);
-
-    // Upload to MinIO
-    console.log(`📤 Uploading video to MinIO...`);
-    const uploadResult = await uploadVideo(outputPath, outputFilename, {
-      city: weatherData.city,
-      temperature: weatherData.temperature,
-      condition: weatherData.condition,
-      date: weatherData.date,
-    });
-
-    console.log(`✅ Video uploaded to MinIO: ${uploadResult.url}`);
-
-    // Optionally delete local file after upload to save space
-    try {
-      fs.unlinkSync(outputPath);
-      console.log(`🗑️ Local file deleted: ${outputFilename}`);
-    } catch (err) {
-      console.warn(`⚠️ Could not delete local file: ${err}`);
-    }
-
-    return res.json({
-      videoUrl: uploadResult.url,
-      filename: outputFilename,
-      etag: uploadResult.etag,
     });
   } catch (error) {
-    console.error(`❌ Failed to render video:`, error);
+    console.error(`❌ Failed to queue video render:`, error);
     return res.status(500).json({
-      error: "Failed to render video",
+      error: "Failed to queue video render",
       details: error instanceof Error ? error.message : String(error),
     });
   }

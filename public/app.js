@@ -512,7 +512,7 @@ form.addEventListener("submit", async (e) => {
     const imageData = await imageResponse.json();
     updateStep(step2, "completed");
 
-    // Step 3: Render video
+    // Step 3: Render video (Queue job)
     updateStep(step3, "active");
     showStatus(t("renderingVideo"), "loading");
 
@@ -533,24 +533,69 @@ form.addEventListener("submit", async (e) => {
       throw new Error(t("errorRender"));
     }
 
-    const videoData = await renderResponse.json();
-    updateStep(step3, "completed");
+    const queueData = await renderResponse.json();
+    const jobId = queueData.jobId;
 
-    // Step 4: Show preview
-    updateStep(step4, "active");
-    showStatus(t("success"), "success");
+    // Connect to Socket.io for real-time updates
+    const socket = io();
 
-    // Hide loading and display video
-    hideVideoLoading();
-    currentVideoUrl = videoData.videoUrl;
-    previewVideo.src = currentVideoUrl;
-    updateStep(step4, "completed");
+    // Subscribe to this job
+    socket.emit("subscribe:job", jobId);
 
-    // Refresh gallery with new video
-    refreshVideoGallery();
+    // Listen for job progress updates
+    socket.on("job:progress", (data) => {
+      console.log("Job progress:", data);
+      const progressPercent = Math.round(data.progress);
+      showStatus(`${t("renderingVideo")} - ${progressPercent}%`, "loading");
+    });
 
-    // Scroll to video
-    videoPreview.scrollIntoView({ behavior: "smooth", block: "center" });
+    // Listen for job completion
+    socket.on("job:completed", (data) => {
+      console.log("Job completed:", data);
+
+      // Unsubscribe and disconnect
+      socket.emit("unsubscribe:job", jobId);
+      socket.disconnect();
+
+      // Update UI
+      updateStep(step3, "completed");
+
+      // Step 4: Show preview
+      updateStep(step4, "active");
+      showStatus(t("success"), "success");
+
+      // Hide loading and display video
+      hideVideoLoading();
+      currentVideoUrl = data.result.videoUrl;
+      previewVideo.src = currentVideoUrl;
+      updateStep(step4, "completed");
+
+      // Refresh gallery with new video
+      refreshVideoGallery();
+
+      // Scroll to video
+      videoPreview.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      // Re-enable form
+      generateBtn.disabled = false;
+      cityInput.disabled = false;
+    });
+
+    // Listen for job failure
+    socket.on("job:failed", (data) => {
+      console.error("Job failed:", data);
+
+      // Unsubscribe and disconnect
+      socket.emit("unsubscribe:job", jobId);
+      socket.disconnect();
+
+      // Show error
+      throw new Error(data.error || t("errorRender"));
+    });
+
+    // Wait for job to complete (Socket.io will handle the rest)
+    // Don't fall through - the socket handlers will update the UI
+    return;
   } catch (error) {
     console.error("Error:", error);
     showStatus(`Error: ${error.message}`, "error");

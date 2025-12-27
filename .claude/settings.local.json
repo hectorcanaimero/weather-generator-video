@@ -23,7 +23,15 @@
       "Bash(docker system prune:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push)"
+      "Bash(git push)",
+      "Bash(grep:*)",
+      "Bash(npm run server:*)",
+      "Bash(lsof:*)",
+      "Bash(xargs kill -9)",
+      "Bash(npm run worker:*)",
+      "Bash(curl:*)",
+      "Bash(jq:*)",
+      "Bash(kill:*)"
     ]
   }
 }
