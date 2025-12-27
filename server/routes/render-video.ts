@@ -27,7 +27,12 @@ interface RenderRequest {
 }
 
 router.post("/", async (req, res) => {
-  const { city, weatherData, imageFilename, language = 'en' } = req.body as RenderRequest;
+  const {
+    city,
+    weatherData,
+    imageFilename,
+    language = "en",
+  } = req.body as RenderRequest;
 
   if (!city || !weatherData || !imageFilename) {
     return res.status(400).json({ error: "Missing required parameters" });
@@ -85,7 +90,12 @@ router.post("/", async (req, res) => {
       browserExecutable: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
       chromiumOptions: {
         // @ts-ignore - Remotion types don't include all Puppeteer options
-        args: ['--headless=new', '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+        // args: ['--headless=new', '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+        args: [
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-dev-shm-usage",
+        ],
       },
     });
 
