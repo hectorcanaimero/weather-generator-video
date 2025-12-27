@@ -66,6 +66,7 @@ router.post("/", async (req, res) => {
         useAI: true,
         language,
       },
+      browserExecutable: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
     });
 
     console.log(`🎥 Rendering video...`);
@@ -82,6 +83,7 @@ router.post("/", async (req, res) => {
         useAI: true,
         language,
       },
+      browserExecutable: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
     });
 
     console.log(`✅ Video rendered successfully: ${outputFilename}`);

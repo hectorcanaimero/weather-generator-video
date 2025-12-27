@@ -58,8 +58,9 @@ RUN mkdir -p /app/out
 EXPOSE 3001
 
 # Set environment variables
-ENV NODE_ENV=production
-ENV PORT=3001
+ENV NODE_ENV=production \
+    PORT=3001 \
+    REMOTION_DISABLE_UPDATE_CHECK=1
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
