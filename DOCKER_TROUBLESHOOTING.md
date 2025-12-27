@@ -109,6 +109,24 @@ Esto le dice a Chromium que:
 4. Deshabilite setuid sandbox con `--disable-setuid-sandbox` (alternativa más segura)
 5. Deshabilite `/dev/shm` con `--disable-dev-shm-usage` (evita problemas de memoria compartida en contenedores)
 
+### Error: "spawn remotion ENOENT" (compositor-linux-arm64-musl)
+**Causa:** Estás intentando ejecutar Docker en una Mac con Apple Silicon (M1/M2/M3) pero Remotion no tiene compositor para ARM64.
+**Solución:** Fuerza la arquitectura AMD64:
+
+```bash
+# Build con plataforma AMD64
+docker build --platform linux/amd64 -t weather-video:latest .
+
+# Run con plataforma AMD64
+docker run --platform linux/amd64 -p 3001:3001 --env-file .env weather-video:latest
+
+# O usa los scripts de package.json que ya incluyen --platform
+npm run docker:build
+npm run docker:run
+```
+
+**Nota:** En producción (Coolify), esto no es necesario ya que los servidores suelen ser AMD64.
+
 ### Video se genera pero está en blanco
 **Causa:** Fuentes o recursos no se cargan correctamente.
 **Solución:** Verifica que:

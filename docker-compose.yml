@@ -2,9 +2,12 @@ version: '3.8'
 
 services:
   weather-video:
+    platform: linux/amd64
     build:
       context: .
       dockerfile: Dockerfile
+      platforms:
+        - linux/amd64
     container_name: weather-video-app
     ports:
       - "3001:3001"

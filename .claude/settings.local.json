@@ -11,7 +11,16 @@
       "Bash(then echo \"=== .env file exists ===\")",
       "Bash(else echo \".env file not found\")",
       "Bash(fi)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(chmod:*)",
+      "Bash(npm run docker:build:*)",
+      "Bash(docker stop:*)",
+      "Bash(docker rm:*)",
+      "Bash(docker rmi:*)",
+      "Bash(npm run docker:run:*)",
+      "Bash(xargs docker stop:*)",
+      "Bash(docker build:*)",
+      "Bash(docker system prune:*)"
     ]
   }
 }
