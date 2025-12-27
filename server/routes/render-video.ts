@@ -73,7 +73,6 @@ router.post("/", async (req, res) => {
       },
       chromiumOptions: {
         // @ts-ignore - Remotion types don't include all Puppeteer options
-        executablePath: "/usr/bin/chromium-browser",
         args: [
           "--no-sandbox",
           "--disable-setuid-sandbox",
@@ -100,7 +99,6 @@ router.post("/", async (req, res) => {
       },
       chromiumOptions: {
         // @ts-ignore - Remotion types don't include all Puppeteer options
-        executablePath: "/usr/bin/chromium-browser",
         args: [
           "--no-sandbox",
           "--disable-setuid-sandbox",

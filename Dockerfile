@@ -1,7 +1,7 @@
 # ========================
 # Builder
 # ========================
-FROM node:20-alpine AS builder
+FROM node:20-bookworm AS builder
 
 WORKDIR /app
 
@@ -14,19 +14,30 @@ RUN npm run build
 # ========================
 # Production
 # ========================
-FROM node:20-alpine
+FROM node:20-bookworm-slim
 
-# Dependencias del sistema para Remotion + Chromium
-RUN apk add --no-cache \
-    chromium \
-    ffmpeg \
-    nss \
-    freetype \
-    harfbuzz \
-    ca-certificates \
-    ttf-freefont \
-    font-noto-emoji \
-    dumb-init
+# Dependencias reales para Chromium + Remotion
+RUN apt-get update && apt-get install -y \
+  chromium \
+  ffmpeg \
+  ca-certificates \
+  fonts-liberation \
+  fonts-noto-color-emoji \
+  libasound2 \
+  libatk1.0-0 \
+  libatk-bridge2.0-0 \
+  libcups2 \
+  libdrm2 \
+  libgbm1 \
+  libgtk-3-0 \
+  libnspr4 \
+  libnss3 \
+  libx11-xcb1 \
+  libxcomposite1 \
+  libxdamage1 \
+  libxrandr2 \
+  xdg-utils \
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -45,14 +56,11 @@ RUN mkdir -p /app/out
 EXPOSE 3001
 
 # ========================
-# 🔥 VARIABLES CLAVE (IMPORTANTES)
+# VARIABLES CLAVE
 # ========================
 ENV NODE_ENV=production \
-    PORT=3001 \
-    REMOTION_DISABLE_UPDATE_CHECK=1 \
-    PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+  PORT=3001 \
+  REMOTION_DISABLE_UPDATE_CHECK=1 \
+  PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3001/api/health', r => process.exit(r.statusCode === 200 ? 0 : 1))"
-
-CMD ["dumb-init", "npx", "tsx", "server/index.ts"]
+CMD ["npx", "tsx", "server/index.ts"]
