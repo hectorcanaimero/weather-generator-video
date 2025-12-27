@@ -1,7 +1,7 @@
 version: '3.8'
 
 # Docker Compose para Coolify (Redis externo)
-# Uso: REDIS_URL debe estar configurado en las variables de entorno de Coolify
+# Asegurar que REDIS_URL esté configurado en las variables de entorno de Coolify
 
 services:
   # Main application server
@@ -12,7 +12,6 @@ services:
       dockerfile: Dockerfile
       platforms:
         - linux/amd64
-    container_name: weather-video-app
     ports:
       - "3001:3001"
     environment:
@@ -38,6 +37,9 @@ services:
       start_period: 40s
     networks:
       - weather-network
+    labels:
+      # Traefik port configuration (critical for reverse proxy)
+      - "traefik.http.services.weather-video.loadbalancer.server.port=3001"
 
   # Worker process (separate container for scaling)
   weather-video-worker:
@@ -47,7 +49,6 @@ services:
       dockerfile: Dockerfile
       platforms:
         - linux/amd64
-    container_name: weather-video-worker
     environment:
       - NODE_ENV=production
       - GEMINI_API_KEY=${GEMINI_API_KEY}
