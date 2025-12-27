@@ -68,8 +68,8 @@ router.post("/", async (req, res) => {
       },
       browserExecutable: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
       chromiumOptions: {
-        headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+        // @ts-ignore - Remotion types don't include all Puppeteer options
+        args: ['--headless=new', '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
       },
     });
 
@@ -89,8 +89,8 @@ router.post("/", async (req, res) => {
       },
       browserExecutable: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
       chromiumOptions: {
-        headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+        // @ts-ignore - Remotion types don't include all Puppeteer options
+        args: ['--headless=new', '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
       },
     });
 

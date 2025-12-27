@@ -97,16 +97,17 @@ Haz una petición para generar un video y busca estos logs:
 // En selectComposition y renderMedia:
 browserExecutable: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
 chromiumOptions: {
-  headless: true,
-  args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+  // @ts-ignore - Remotion types don't include all Puppeteer options
+  args: ['--headless=new', '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
 },
 ```
 
-Esto le dice a Remotion que:
+Esto le dice a Chromium que:
 1. Use el Chromium instalado en el sistema (`/usr/bin/chromium-browser`)
-2. Use el nuevo modo headless
-3. Deshabilite sandbox (necesario en Docker)
-4. Deshabilite `/dev/shm` (evita problemas de memoria compartida en contenedores)
+2. Use el **nuevo modo headless** con `--headless=new` (requerido en versiones modernas de Chromium)
+3. Deshabilite sandbox con `--no-sandbox` (necesario en Docker)
+4. Deshabilite setuid sandbox con `--disable-setuid-sandbox` (alternativa más segura)
+5. Deshabilite `/dev/shm` con `--disable-dev-shm-usage` (evita problemas de memoria compartida en contenedores)
 
 ### Video se genera pero está en blanco
 **Causa:** Fuentes o recursos no se cargan correctamente.
