@@ -71,16 +71,6 @@ router.post("/", async (req, res) => {
         useAI: true,
         language,
       },
-      chromiumExecutable: "/usr/bin/chromium",
-
-      chromiumOptions: {
-        // @ts-ignore - Remotion types don't include all Puppeteer options
-        args: [
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-          "--disable-dev-shm-usage",
-        ],
-      },
     });
 
     console.log(`🎥 Rendering video...`);
@@ -97,7 +87,7 @@ router.post("/", async (req, res) => {
         useAI: true,
         language,
       },
-      chromiumExecutable: "/usr/bin/chromium",
+      browserExecutable: "/usr/bin/chromium",
       // browserExecutable: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
       chromiumOptions: {
         // @ts-ignore - Remotion types don't include all Puppeteer options
