@@ -3,11 +3,20 @@ import { GoogleGenAI } from "@google/genai";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { createRateLimiter } from "../middleware/rate-limit.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const router = express.Router();
+
+// Rate limiter: 5 image generations per day per IP
+const imageGenerationLimiter = createRateLimiter({
+  windowMs: 24 * 60 * 60 * 1000, // 24 hours
+  max: 5,
+  message:
+    "Has alcanzado el límite de 5 generaciones de imágenes por día. Intenta mañana.",
+});
 
 interface WeatherData {
   city: string;
@@ -17,11 +26,17 @@ interface WeatherData {
   date: string;
 }
 
-router.post("/", async (req, res) => {
-  const { city, weatherData, language = 'en' } = req.body as { city: string; weatherData: WeatherData; language?: string };
+router.post("/", imageGenerationLimiter, async (req, res) => {
+  const {
+    city,
+    weatherData,
+    language = "en",
+  } = req.body as { city: string; weatherData: WeatherData; language?: string };
 
   if (!city || !weatherData) {
-    return res.status(400).json({ error: "City and weather data are required" });
+    return res
+      .status(400)
+      .json({ error: "City and weather data are required" });
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
@@ -51,11 +66,16 @@ router.post("/", async (req, res) => {
         cloudy: "céu nublado com luz difusa suave",
         rain: "chuva suave com superfícies refletoras molhadas",
         storm: "tempestade dramática com nuvens escuras e relâmpagos",
-      }
+      },
     };
 
-    const langDescriptions = weatherDescriptions[language as keyof typeof weatherDescriptions] || weatherDescriptions.en;
-    const weatherDesc = langDescriptions[weatherData.condition as keyof typeof langDescriptions] || "current weather conditions";
+    const langDescriptions =
+      weatherDescriptions[language as keyof typeof weatherDescriptions] ||
+      weatherDescriptions.en;
+    const weatherDesc =
+      langDescriptions[
+        weatherData.condition as keyof typeof langDescriptions
+      ] || "current weather conditions";
 
     const prompt = `Create a 45° top-down isometric miniature 3D diorama scene of ${city}, featuring its most iconic landmarks and architectural elements. Use soft, refined textures with realistic PBR materials and gentle, lifelike lighting and shadows. Show ${weatherDesc} integrated into the city environment to create an immersive atmospheric mood.
 
@@ -85,7 +105,9 @@ IMPORTANT:
 
     // Extract image and save
     const candidate = response.candidates[0];
-    const imagePart = candidate.content.parts.find((part: any) => part.inlineData);
+    const imagePart = candidate.content.parts.find(
+      (part: any) => part.inlineData,
+    );
 
     if (!imagePart || !imagePart.inlineData) {
       throw new Error("No image data in response");

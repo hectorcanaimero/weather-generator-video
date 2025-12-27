@@ -133,6 +133,37 @@ function t(key) {
   return statusMessages[lang][key] || statusMessages['en'][key];
 }
 
+// Get translation from index.html translations
+function getTranslation(key) {
+  const lang = getCurrentLanguage();
+  const translations = window.translations || {};
+  return translations[lang]?.[key] || translations['en']?.[key] || key;
+}
+
+// Update rate limit display
+function updateRateLimitDisplay(remaining) {
+  const message = getTranslation('remainingGenerations').replace('{count}', remaining);
+
+  // Show message near the generate button
+  let rateLimitInfo = document.getElementById('rateLimitInfo');
+  if (!rateLimitInfo) {
+    rateLimitInfo = document.createElement('div');
+    rateLimitInfo.id = 'rateLimitInfo';
+    rateLimitInfo.className = 'text-sm text-gray-600 mt-2 text-center';
+    generateBtn.parentElement.appendChild(rateLimitInfo);
+  }
+
+  rateLimitInfo.textContent = message;
+
+  // Hide after 5 seconds
+  setTimeout(() => {
+    if (rateLimitInfo) {
+      rateLimitInfo.style.opacity = '0';
+      setTimeout(() => rateLimitInfo.remove(), 300);
+    }
+  }, 5000);
+}
+
 // Update step status
 function updateStep(stepElement, state) {
   stepElement.classList.remove('active', 'completed');
@@ -402,8 +433,44 @@ form.addEventListener('submit', async (e) => {
       }),
     });
 
+    // Check for rate limit error
+    if (imageResponse.status === 429) {
+      const errorData = await imageResponse.json();
+      const remaining = imageResponse.headers.get('X-RateLimit-Remaining');
+      const resetAt = imageResponse.headers.get('X-RateLimit-Reset');
+
+      hideVideoLoading();
+      showStatus(errorData.message || t('errorImage'), 'error');
+
+      // Disable generate button until reset
+      if (resetAt) {
+        const resetDate = new Date(parseInt(resetAt) * 1000);
+        generateBtn.disabled = true;
+        generateBtn.textContent = `⏳ ${getTranslation('rateLimitReached')}`;
+
+        // Re-enable at midnight
+        const now = Date.now();
+        const timeUntilReset = resetDate.getTime() - now;
+        if (timeUntilReset > 0) {
+          setTimeout(() => {
+            generateBtn.disabled = false;
+            generateBtn.setAttribute('data-i18n', 'generateVideo');
+            generateBtn.textContent = getTranslation('generateVideo');
+          }, timeUntilReset);
+        }
+      }
+
+      return;
+    }
+
     if (!imageResponse.ok) {
       throw new Error(t('errorImage'));
+    }
+
+    // Read rate limit headers and update UI
+    const remaining = imageResponse.headers.get('X-RateLimit-Remaining');
+    if (remaining !== null) {
+      updateRateLimitDisplay(parseInt(remaining));
     }
 
     const imageData = await imageResponse.json();

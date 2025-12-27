@@ -34,6 +34,8 @@
           stepRendering: "Rendering",
           stepCompleted: "Completed",
           takeMoment: "This might take a moment",
+          rateLimitReached: "You've reached the daily limit of 5 image generations. Try again tomorrow.",
+          remainingGenerations: "Remaining generations today: {count}",
         },
         es: {
           title: "Weather Video Generator",
@@ -63,6 +65,8 @@
           stepRendering: "Renderizado",
           stepCompleted: "Completado",
           takeMoment: "Esto podría tardar un momento.",
+          rateLimitReached: "Has alcanzado el límite diario de 5 generaciones de imágenes. Intenta mañana.",
+          remainingGenerations: "Generaciones restantes hoy: {count}",
         },
         pt: {
           title: "Weather Video Generator",
@@ -92,8 +96,13 @@
           stepRendering: "Renderizando",
           stepCompleted: "Concluído",
           takeMoment: "Isso pode levar um momento.",
+          rateLimitReached: "Você atingiu o limite diário de 5 gerações de imagens. Tente amanhã.",
+          remainingGenerations: "Gerações restantes hoje: {count}",
         },
       };
+
+      // Make translations globally accessible for app.js
+      window.translations = translations;
 
       // Current language (stored in localStorage)
       let currentLang = null;
