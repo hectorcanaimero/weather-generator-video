@@ -13,7 +13,7 @@ const router = express.Router();
 // Rate limiter: 5 image generations per day per IP
 const imageGenerationLimiter = createRateLimiter({
   windowMs: 24 * 60 * 60 * 1000, // 24 hours
-  max: 5,
+  max: 20,
   message:
     "Has alcanzado el límite de 5 generaciones de imágenes por día. Intenta mañana.",
 });

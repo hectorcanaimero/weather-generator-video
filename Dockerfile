@@ -19,8 +19,20 @@ RUN npm run build
 # Production stage
 FROM node:20-alpine
 
-# Install ffmpeg for video rendering
-RUN apk add --no-cache ffmpeg
+# Install system dependencies for Remotion and Chromium
+RUN apk add --no-cache \
+    ffmpeg \
+    chromium \
+    nss \
+    freetype \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont \
+    font-noto-emoji
+
+# Set Chromium path for Remotion/Puppeteer
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 # Set working directory
 WORKDIR /app
@@ -36,6 +48,7 @@ COPY --from=builder /app/server ./server
 COPY --from=builder /app/src ./src
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/remotion.config.ts ./remotion.config.ts
+COPY --from=builder /app/postcss.config.mjs ./postcss.config.mjs
 COPY --from=builder /app/tsconfig.json ./tsconfig.json
 
 # Create output directory for videos

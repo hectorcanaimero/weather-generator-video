@@ -3,7 +3,73 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Weather Video Generator</title>
+
+    <!-- Primary Meta Tags -->
+    <title>Weather Video Generator - Create AI-Powered Weather Videos</title>
+    <meta name="title" content="Weather Video Generator - Create AI-Powered Weather Videos" />
+    <meta name="description" content="Generate personalized weather videos with AI. Create stunning 3D isometric weather animations for any city using Google Gemini AI and real-time weather data." />
+    <meta name="keywords" content="weather video, AI video generator, weather animation, Gemini AI, weather forecast, video creator, automated videos, weather visualization" />
+    <meta name="author" content="Weather Video Generator" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://weather.guria.lat" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://weather.guria.lat/" />
+    <meta property="og:title" content="Weather Video Generator - Create AI-Powered Weather Videos" />
+    <meta property="og:description" content="Generate personalized weather videos with AI. Create stunning 3D isometric weather animations for any city." />
+    <meta property="og:image" content="https://weather.guria.lat/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="es_ES" />
+    <meta property="og:locale:alternate" content="pt_BR" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://weather.guria.lat/" />
+    <meta property="twitter:title" content="Weather Video Generator - Create AI-Powered Weather Videos" />
+    <meta property="twitter:description" content="Generate personalized weather videos with AI. Create stunning 3D isometric weather animations for any city." />
+    <meta property="twitter:image" content="https://weather.guria.lat/og-image.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#3b82f6" />
+    <meta name="msapplication-TileColor" content="#3b82f6" />
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Weather Video Generator",
+      "description": "Generate personalized weather videos with AI using Google Gemini and real-time weather data",
+      "url": "https://weather.guria.lat",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "creator": {
+        "@type": "Organization",
+        "name": "Weather Video Generator"
+      },
+      "featureList": [
+        "AI-powered image generation",
+        "Real-time weather data",
+        "3D isometric city scenes",
+        "Automated video rendering",
+        "Multi-language support"
+      ]
+    }
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       // i18n translations
@@ -284,29 +350,34 @@
               Genera videos personalizados del clima con IA
             </p>
           </div>
-          <div class="flex items-center gap-2">
-            <button
-              onclick="changeLanguage('en')"
-              id="langEn"
-              class="lang-btn px-3 py-1.5 text-sm font-medium rounded-lg transition hover:bg-gray-100"
-            >
-              EN
-            </button>
-            <button
-              onclick="changeLanguage('es')"
-              id="langEs"
-              class="lang-btn px-3 py-1.5 text-sm font-medium rounded-lg transition hover:bg-gray-100"
-            >
-              ES
-            </button>
-            <button
-              onclick="changeLanguage('pt')"
-              id="langPt"
-              class="lang-btn px-3 py-1.5 text-sm font-medium rounded-lg transition hover:bg-gray-100"
-            >
-              PT
-            </button>
-          </div>
+          <nav aria-label="Language selector">
+            <div class="flex items-center gap-2">
+              <button
+                onclick="changeLanguage('en')"
+                id="langEn"
+                class="lang-btn px-3 py-1.5 text-sm font-medium rounded-lg transition hover:bg-gray-100"
+                aria-label="Switch to English"
+              >
+                EN
+              </button>
+              <button
+                onclick="changeLanguage('es')"
+                id="langEs"
+                class="lang-btn px-3 py-1.5 text-sm font-medium rounded-lg transition hover:bg-gray-100"
+                aria-label="Cambiar a Español"
+              >
+                ES
+              </button>
+              <button
+                onclick="changeLanguage('pt')"
+                id="langPt"
+                class="lang-btn px-3 py-1.5 text-sm font-medium rounded-lg transition hover:bg-gray-100"
+                aria-label="Mudar para Português"
+              >
+                PT
+              </button>
+            </div>
+          </nav>
         </div>
       </div>
     </header>
@@ -314,9 +385,10 @@
     <!-- Main Content -->
     <main class="px-4 sm:px-6 lg:px-8 py-12">
       <!-- Generator and Preview in Same Row -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 mb-16">
-        <!-- Generator Section -->
-        <div>
+      <section aria-label="Video generator and preview">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 mb-16">
+          <!-- Generator Section -->
+          <div>
           <div
             class="bg-white border border-gray-200 rounded-lg p-8 shadow-sm h-full"
           >
@@ -355,6 +427,7 @@
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
+                      aria-hidden="true"
                     >
                       <path
                         stroke-linecap="round"
@@ -368,6 +441,7 @@
                       class="hidden w-5 h-5 text-blue-500 animate-spin"
                       fill="none"
                       viewBox="0 0 24 24"
+                      aria-label="Loading cities"
                     >
                       <circle
                         class="opacity-25"
@@ -402,10 +476,10 @@
             </form>
 
             <!-- Status Message -->
-            <div id="status" class="mt-6 text-sm text-center hidden"></div>
+            <div id="status" class="mt-6 text-sm text-center hidden" role="status" aria-live="polite"></div>
 
             <!-- Progress Steps -->
-            <div id="progressSteps" class="mt-8 hidden">
+            <div id="progressSteps" class="mt-8 hidden" role="progressbar" aria-label="Video generation progress">
               <div class="grid grid-cols-2 gap-2">
                 <div
                   id="step1"
@@ -454,6 +528,7 @@
                 controls
                 class="w-full h-full object-contain"
                 style="max-height: 600px"
+                aria-label="Generated weather video preview"
               ></video>
 
               <!-- Loading Animation -->
@@ -461,6 +536,9 @@
                 id="videoLoading"
                 class="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 flex flex-col items-center justify-center p-8"
                 style="display: none"
+                role="status"
+                aria-live="polite"
+                aria-label="Video generation in progress"
               >
                 <!-- Spinning circles -->
                 <div class="mb-8">
@@ -509,10 +587,10 @@
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       <!-- Recent Videos Gallery -->
-      <section class="bg-gray-50 p-8 rounded-lg shadow-sm">
+      <section class="bg-gray-50 p-8 rounded-lg shadow-sm" aria-label="Recent videos">
         <div id="recentVideos" class="hidden">
           <div class="flex items-center justify-between mb-6">
             <h2
@@ -533,7 +611,7 @@
       </section>
 
       <!-- Features Section -->
-      <div class="mt-20 pt-20 border-t border-gray-200">
+      <section class="mt-20 pt-20 border-t border-gray-200" aria-label="Features">
         <div class="text-center mb-12">
           <h2
             class="text-2xl font-bold text-gray-900 mb-2"
@@ -550,6 +628,7 @@
           <div class="text-center">
             <div
               class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4"
+              aria-hidden="true"
             >
               <svg
                 class="w-6 h-6 text-blue-600"
@@ -579,6 +658,7 @@
           <div class="text-center">
             <div
               class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4"
+              aria-hidden="true"
             >
               <svg
                 class="w-6 h-6 text-green-600"
@@ -608,6 +688,7 @@
           <div class="text-center">
             <div
               class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4"
+              aria-hidden="true"
             >
               <svg
                 class="w-6 h-6 text-purple-600"
@@ -634,7 +715,7 @@
             </p>
           </div>
         </div>
-      </div>
+      </section>
     </main>
 
     <!-- Footer -->
