@@ -50,7 +50,6 @@ EXPOSE 3001
 ENV NODE_ENV=production \
     PORT=3001 \
     REMOTION_DISABLE_UPDATE_CHECK=1 \
-    REMOTION_BROWSER_EXECUTABLE=/usr/bin/chromium-browser \
     PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
