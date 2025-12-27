@@ -1,24 +1,9 @@
 version: '3.8'
 
-services:
-  # Redis for BullMQ
-  redis:
-    image: redis:7-alpine
-    container_name: weather-video-redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis-data:/data
-    command: redis-server --appendonly yes
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 3s
-      retries: 3
-    networks:
-      - weather-network
-    restart: unless-stopped
+# Docker Compose para Coolify (Redis externo)
+# Uso: REDIS_URL debe estar configurado en las variables de entorno de Coolify
 
+services:
   # Main application server
   weather-video:
     platform: linux/amd64
@@ -41,12 +26,9 @@ services:
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
       - MINIO_BUCKET=${MINIO_BUCKET:-weather}
-      - REDIS_URL=redis://redis:6379
+      - REDIS_URL=${REDIS_URL}
     volumes:
       - ./out:/app/out
-    depends_on:
-      redis:
-        condition: service_healthy
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/api/health"]
@@ -76,20 +58,13 @@ services:
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
       - MINIO_BUCKET=${MINIO_BUCKET:-weather}
-      - REDIS_URL=redis://redis:6379
+      - REDIS_URL=${REDIS_URL}
     volumes:
       - ./out:/app/out
-    depends_on:
-      redis:
-        condition: service_healthy
     command: ["npx", "tsx", "server/worker-process.ts"]
     restart: unless-stopped
     networks:
       - weather-network
-
-volumes:
-  redis-data:
-    driver: local
 
 networks:
   weather-network:

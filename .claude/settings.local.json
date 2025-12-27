@@ -31,7 +31,8 @@
       "Bash(npm run worker:*)",
       "Bash(curl:*)",
       "Bash(jq:*)",
-      "Bash(kill:*)"
+      "Bash(kill:*)",
+      "Bash(ls:*)"
     ]
   }
 }
