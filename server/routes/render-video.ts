@@ -87,7 +87,7 @@ router.post("/", async (req, res) => {
         useAI: true,
         language,
       },
-      browserExecutable: "/usr/bin/chromium",
+      // browserExecutable: "/usr/bin/chromium",
       // browserExecutable: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
       chromiumOptions: {
         // @ts-ignore - Remotion types don't include all Puppeteer options

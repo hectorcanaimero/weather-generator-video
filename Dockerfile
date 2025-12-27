@@ -16,7 +16,7 @@ RUN npm run build
 # ========================
 FROM node:20-alpine
 
-# 👉 Chromium REAL + dependencias
+# Dependencias del sistema para Remotion + Chromium
 RUN apk add --no-cache \
     chromium \
     ffmpeg \
@@ -26,9 +26,6 @@ RUN apk add --no-cache \
     ca-certificates \
     ttf-freefont \
     font-noto-emoji
-
-# ❌ NO usar Chromium embebido
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 WORKDIR /app
 
@@ -46,10 +43,14 @@ RUN mkdir -p /app/out
 
 EXPOSE 3001
 
+# ========================
+# 🔥 VARIABLES CLAVE
+# ========================
 ENV NODE_ENV=production \
     PORT=3001 \
     REMOTION_DISABLE_UPDATE_CHECK=1 \
-    CHROME_PATH=/usr/bin/chromium-browser
+    REMOTION_CHROMIUM_EXECUTABLE=/usr/bin/chromium \
+    PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3001/api/health', r => process.exit(r.statusCode === 200 ? 0 : 1))"
