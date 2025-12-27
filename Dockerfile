@@ -19,10 +19,9 @@ RUN npm run build
 # Production stage
 FROM node:20-alpine
 
-# Install system dependencies for Remotion and Chromium
+# Install system dependencies for Remotion
 RUN apk add --no-cache \
     ffmpeg \
-    chromium \
     nss \
     freetype \
     harfbuzz \
@@ -30,9 +29,8 @@ RUN apk add --no-cache \
     ttf-freefont \
     font-noto-emoji
 
-# Set Chromium path for Remotion/Puppeteer
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+# Don't skip Chromium download - let Remotion use its own browser
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false
 
 # Set working directory
 WORKDIR /app

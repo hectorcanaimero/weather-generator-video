@@ -66,11 +66,6 @@ router.post("/", async (req, res) => {
         useAI: true,
         language,
       },
-      browserExecutable: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
-      chromiumOptions: {
-        // @ts-ignore - Remotion types don't include all Puppeteer options
-        args: ['--headless=new', '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
-      },
     });
 
     console.log(`🎥 Rendering video...`);
