@@ -92,10 +92,12 @@ router.post("/", async (req, res) => {
       chromiumOptions: {
         // @ts-ignore - Remotion types don't include all Puppeteer options
         // args: ['--headless=new', '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+        executablePath: process.env.REMOTION_BROWSER_EXECUTABLE,
         args: [
           "--no-sandbox",
           "--disable-setuid-sandbox",
           "--disable-dev-shm-usage",
+          "--disable-gpu",
         ],
       },
     });

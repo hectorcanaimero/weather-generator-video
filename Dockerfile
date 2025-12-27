@@ -25,7 +25,8 @@ RUN apk add --no-cache \
     harfbuzz \
     ca-certificates \
     ttf-freefont \
-    font-noto-emoji
+    font-noto-emoji \
+    dumb-init
 
 WORKDIR /app
 
@@ -44,15 +45,15 @@ RUN mkdir -p /app/out
 EXPOSE 3001
 
 # ========================
-# 🔥 VARIABLES CLAVE
+# 🔥 VARIABLES CLAVE (IMPORTANTES)
 # ========================
 ENV NODE_ENV=production \
     PORT=3001 \
     REMOTION_DISABLE_UPDATE_CHECK=1 \
-    REMOTION_CHROMIUM_EXECUTABLE=/usr/bin/chromium \
+    REMOTION_BROWSER_EXECUTABLE=/usr/bin/chromium-browser \
     PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3001/api/health', r => process.exit(r.statusCode === 200 ? 0 : 1))"
 
-CMD ["npx", "tsx", "server/index.ts"]
+CMD ["dumb-init", "npx", "tsx", "server/index.ts"]
