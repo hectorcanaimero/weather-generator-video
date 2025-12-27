@@ -70,8 +70,12 @@ export default function Weather({
   const date = weatherData?.date ?? defaultDate;
   const rawCity = weatherData?.city ?? city;
 
-  // Format city name: First letter uppercase, rest lowercase
-  const displayCity = rawCity.charAt(0).toUpperCase() + rawCity.slice(1).toLowerCase();
+  // Format city name: Title Case (each word starts with uppercase)
+  const displayCity = rawCity
+    .toLowerCase()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 
   const cityOpacity = interpolate(frame, [0, 30], [0, 1], {
     easing: Easing.out(Easing.ease),

@@ -33,6 +33,7 @@
           stepAI: "AI Image",
           stepRendering: "Rendering",
           stepCompleted: "Completed",
+          takeMoment: "This might take a moment",
         },
         es: {
           title: "Weather Video Generator",
@@ -61,6 +62,7 @@
           stepAI: "Imagen IA",
           stepRendering: "Renderizado",
           stepCompleted: "Completado",
+          takeMoment: "Esto podría tardar un momento.",
         },
         pt: {
           title: "Weather Video Generator",
@@ -89,6 +91,7 @@
           stepAI: "Imagem IA",
           stepRendering: "Renderizando",
           stepCompleted: "Concluído",
+          takeMoment: "Isso pode levar um momento.",
         },
       };
 
@@ -262,7 +265,7 @@
   <body class="bg-white text-gray-900 antialiased">
     <!-- Header -->
     <header class="border-b border-gray-200">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div class="px-4 sm:px-6 lg:px-8 py-6">
         <div class="flex items-center justify-between">
           <div>
             <h1 class="text-2xl font-bold text-gray-900" data-i18n="title">
@@ -447,12 +450,12 @@
               <!-- Loading Animation -->
               <div
                 id="videoLoading"
-                class="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 items-center justify-center p-8"
+                class="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 flex flex-col items-center justify-center p-8"
                 style="display: none"
               >
+                <!-- Spinning circles -->
                 <div class="mb-8">
-                  <div class="relative w-24 h-24">
-                    <!-- Spinning circles -->
+                  <div class="relative w-24 h-24 mx-auto">
                     <div
                       class="absolute inset-0 border-4 border-blue-200 rounded-full"
                     ></div>
@@ -472,7 +475,7 @@
                   </div>
                 </div>
 
-                <!-- Funny Messages -->
+                <!-- Funny Messages Below -->
                 <div class="text-center max-w-md">
                   <p
                     id="funnyMessage"
@@ -480,7 +483,9 @@
                   >
                     ✨ Generating your video...
                   </p>
-                  <p class="text-sm text-gray-600">This might take a moment</p>
+                  <p class="text-sm text-gray-600" data-i18n="takeMoment">
+                    This might take a moment
+                  </p>
                 </div>
               </div>
             </div>
