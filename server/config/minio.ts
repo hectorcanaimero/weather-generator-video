@@ -186,7 +186,7 @@ export async function listRecentVideos(limit: number = 6): Promise<
               city: stat.metaData?.["x-city"],
               temperature: stat.metaData?.["x-temperature"],
               condition: stat.metaData?.["x-condition"],
-              date: stat.metaData?.["x-date"],
+              date: stat.metaData?.["x-upload-date"] || stat.metaData?.["x-date"],
             },
           };
         } catch (error) {

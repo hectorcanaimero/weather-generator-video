@@ -565,16 +565,31 @@ form.addEventListener("submit", async (e) => {
 });
 
 // Handle download button
-downloadBtn.addEventListener("click", () => {
+downloadBtn.addEventListener("click", async () => {
   if (currentVideoUrl) {
-    const a = document.createElement("a");
-    a.href = currentVideoUrl;
-    a.target = "_blank"; // 👈 abre en otra pestaña
-    a.rel = "noopener noreferrer"; // buena práctica
-    a.download = `weather-${cityInput.value.toLowerCase().replace(/\s+/g, "-")}.mp4`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    try {
+      // Fetch the video as a blob for better mobile compatibility
+      const response = await fetch(currentVideoUrl);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = `weather-${cityInput.value.toLowerCase().replace(/\s+/g, "-")}.mp4`;
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+
+      // Clean up
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(blobUrl);
+      }, 100);
+    } catch (error) {
+      console.error("Download error:", error);
+      // Fallback to direct link
+      window.open(currentVideoUrl, "_blank");
+    }
   }
 });
 
@@ -616,9 +631,15 @@ function displayVideos(videos) {
     const icon = weatherIcons[video.metadata.condition] || "🌤️";
     const city = video.metadata.city || "Unknown";
     const temp = video.metadata.temperature || "--";
-    const date = video.metadata.date
-      ? new Date(video.metadata.date).toLocaleDateString()
-      : "";
+
+    // Format date and time
+    let dateTimeStr = "";
+    if (video.metadata.date) {
+      const videoDate = new Date(video.metadata.date);
+      const date = videoDate.toLocaleDateString();
+      const time = videoDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      dateTimeStr = `${date} ${time}`;
+    }
 
     card.innerHTML = `
       <video src="${video.url}" muted loop onmouseover="this.play()" onmouseout="this.pause(); this.currentTime=0;" class="w-full aspect-[9/16] object-cover bg-gray-100"></video>
@@ -626,21 +647,56 @@ function displayVideos(videos) {
         <div class="font-semibold text-gray-900 mb-1">${city}</div>
         <div class="flex items-center gap-3 text-sm text-gray-600">
           <span>${icon} ${temp}°C</span>
-          ${date ? `<span class="text-gray-400">•</span><span>${date}</span>` : ""}
         </div>
-                  <div flex items-center mt-3>
-                    <a href="${video.url}" download class="ml-auto text-blue-600 hover:underline" target='_blank'>${t("download")}</a>
-          </div>
+        ${dateTimeStr ? `<div class="text-xs text-gray-400 mt-1">🕐 ${dateTimeStr}</div>` : ""}
+        <div class="flex items-center mt-3">
+          <button class="download-gallery-btn ml-auto text-blue-600 hover:underline" data-video-url="${video.url}" data-city="${city}">${t("download")}</button>
+        </div>
       </div>
     `;
 
     // Click to preview full video
-    card.addEventListener("click", () => {
+    card.addEventListener("click", (e) => {
+      // Don't preview if clicking the download button
+      if (e.target.classList.contains("download-gallery-btn")) {
+        return;
+      }
       currentVideoUrl = video.url;
       previewVideo.src = video.url;
       videoPreview.classList.remove("hidden");
       videoPreview.scrollIntoView({ behavior: "smooth", block: "center" });
     });
+
+    // Handle download button for gallery items
+    const downloadGalleryBtn = card.querySelector(".download-gallery-btn");
+    if (downloadGalleryBtn) {
+      downloadGalleryBtn.addEventListener("click", async (e) => {
+        e.stopPropagation(); // Prevent card click
+        const videoUrl = downloadGalleryBtn.getAttribute("data-video-url");
+        const cityName = downloadGalleryBtn.getAttribute("data-city");
+
+        try {
+          const response = await fetch(videoUrl);
+          const blob = await response.blob();
+          const blobUrl = URL.createObjectURL(blob);
+
+          const a = document.createElement("a");
+          a.href = blobUrl;
+          a.download = `weather-${cityName.toLowerCase().replace(/\s+/g, "-")}.mp4`;
+          a.style.display = "none";
+          document.body.appendChild(a);
+          a.click();
+
+          setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(blobUrl);
+          }, 100);
+        } catch (error) {
+          console.error("Download error:", error);
+          window.open(videoUrl, "_blank");
+        }
+      });
+    }
 
     videoGrid.appendChild(card);
   });

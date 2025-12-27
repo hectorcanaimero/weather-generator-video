@@ -6,9 +6,18 @@
 
     <!-- Primary Meta Tags -->
     <title>Weather Video Generator - Create AI-Powered Weather Videos</title>
-    <meta name="title" content="Weather Video Generator - Create AI-Powered Weather Videos" />
-    <meta name="description" content="Generate personalized weather videos with AI. Create stunning 3D isometric weather animations for any city using Google Gemini AI and real-time weather data." />
-    <meta name="keywords" content="weather video, AI video generator, weather animation, Gemini AI, weather forecast, video creator, automated videos, weather visualization" />
+    <meta
+      name="title"
+      content="Weather Video Generator - Create AI-Powered Weather Videos"
+    />
+    <meta
+      name="description"
+      content="Generate personalized weather videos with AI. Create stunning 3D isometric weather animations for any city using Google Gemini AI and real-time weather data."
+    />
+    <meta
+      name="keywords"
+      content="weather video, AI video generator, weather animation, Gemini AI, weather forecast, video creator, automated videos, weather visualization"
+    />
     <meta name="author" content="Weather Video Generator" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://weather.guria.lat" />
@@ -16,9 +25,18 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://weather.guria.lat/" />
-    <meta property="og:title" content="Weather Video Generator - Create AI-Powered Weather Videos" />
-    <meta property="og:description" content="Generate personalized weather videos with AI. Create stunning 3D isometric weather animations for any city." />
-    <meta property="og:image" content="https://weather.guria.lat/og-image.png" />
+    <meta
+      property="og:title"
+      content="Weather Video Generator - Create AI-Powered Weather Videos"
+    />
+    <meta
+      property="og:description"
+      content="Generate personalized weather videos with AI. Create stunning 3D isometric weather animations for any city."
+    />
+    <meta
+      property="og:image"
+      content="https://weather.guria.lat/og-image.png"
+    />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="en_US" />
@@ -28,9 +46,18 @@
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://weather.guria.lat/" />
-    <meta property="twitter:title" content="Weather Video Generator - Create AI-Powered Weather Videos" />
-    <meta property="twitter:description" content="Generate personalized weather videos with AI. Create stunning 3D isometric weather animations for any city." />
-    <meta property="twitter:image" content="https://weather.guria.lat/og-image.png" />
+    <meta
+      property="twitter:title"
+      content="Weather Video Generator - Create AI-Powered Weather Videos"
+    />
+    <meta
+      property="twitter:description"
+      content="Generate personalized weather videos with AI. Create stunning 3D isometric weather animations for any city."
+    />
+    <meta
+      property="twitter:image"
+      content="https://weather.guria.lat/og-image.png"
+    />
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -43,31 +70,31 @@
 
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Weather Video Generator",
-      "description": "Generate personalized weather videos with AI using Google Gemini and real-time weather data",
-      "url": "https://weather.guria.lat",
-      "applicationCategory": "MultimediaApplication",
-      "operatingSystem": "Any",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "creator": {
-        "@type": "Organization",
-        "name": "Weather Video Generator"
-      },
-      "featureList": [
-        "AI-powered image generation",
-        "Real-time weather data",
-        "3D isometric city scenes",
-        "Automated video rendering",
-        "Multi-language support"
-      ]
-    }
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Weather Video Generator",
+        "description": "Generate personalized weather videos with AI using Google Gemini and real-time weather data",
+        "url": "https://weather.guria.lat",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Any",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "creator": {
+          "@type": "Organization",
+          "name": "Weather Video Generator"
+        },
+        "featureList": [
+          "AI-powered image generation",
+          "Real-time weather data",
+          "3D isometric city scenes",
+          "Automated video rendering",
+          "Multi-language support"
+        ]
+      }
     </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -100,7 +127,8 @@
           stepRendering: "Rendering",
           stepCompleted: "Completed",
           takeMoment: "This might take a moment",
-          rateLimitReached: "You've reached the daily limit of 5 image generations. Try again tomorrow.",
+          rateLimitReached:
+            "You've reached the daily limit of 5 image generations. Try again tomorrow.",
           remainingGenerations: "Remaining generations today: {count}",
         },
         es: {
@@ -131,7 +159,8 @@
           stepRendering: "Renderizado",
           stepCompleted: "Completado",
           takeMoment: "Esto podría tardar un momento.",
-          rateLimitReached: "Has alcanzado el límite diario de 5 generaciones de imágenes. Intenta mañana.",
+          rateLimitReached:
+            "Has alcanzado el límite diario de 5 generaciones de imágenes. Intenta mañana.",
           remainingGenerations: "Generaciones restantes hoy: {count}",
         },
         pt: {
@@ -162,7 +191,8 @@
           stepRendering: "Renderizando",
           stepCompleted: "Concluído",
           takeMoment: "Isso pode levar um momento.",
-          rateLimitReached: "Você atingiu o limite diário de 5 gerações de imagens. Tente amanhã.",
+          rateLimitReached:
+            "Você atingiu o limite diário de 5 gerações de imagens. Tente amanhã.",
           remainingGenerations: "Gerações restantes hoje: {count}",
         },
       };
@@ -340,8 +370,10 @@
   <body class="bg-white text-gray-900 antialiased">
     <!-- Header -->
     <header class="border-b border-gray-200">
-      <div class="px-4 sm:px-6 lg:px-8 py-6">
-        <div class="flex items-center justify-between">
+      <div class="px-4 sm:px-6 lg:px-8 py-6 container mx-auto">
+        <div
+          class="flex flex-col md:flex-row gap-8 items-center justify-center md:justify-between"
+        >
           <div>
             <h1 class="text-2xl font-bold text-gray-900" data-i18n="title">
               Weather Video Generator
@@ -383,215 +415,220 @@
     </header>
 
     <!-- Main Content -->
-    <main class="px-4 sm:px-6 lg:px-8 py-12">
+    <main class="py-12">
       <!-- Generator and Preview in Same Row -->
       <section aria-label="Video generator and preview">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 mb-16">
-          <!-- Generator Section -->
-          <div>
-          <div
-            class="bg-white border border-gray-200 rounded-lg p-8 shadow-sm h-full"
-          >
-            <h2
-              class="text-lg font-semibold text-gray-900 mb-6"
-              data-i18n="generateVideo"
-            >
-              Generar Video
-            </h2>
-
-            <form id="videoForm" class="space-y-6">
-              <div class="relative">
-                <label
-                  for="cityInput"
-                  class="block text-sm font-medium text-gray-700 mb-2"
-                  data-i18n="city"
-                >
-                  Ciudad
-                </label>
-                <div class="relative">
-                  <input
-                    type="text"
-                    id="cityInput"
-                    placeholder="Ej: Curitiba, Paris, Tokyo..."
-                    data-i18n="cityPlaceholder"
-                    required
-                    autocomplete="off"
-                    class="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                  />
-                  <div
-                    class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
-                  >
-                    <svg
-                      id="searchIcon"
-                      class="w-5 h-5 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
+        <div class="container mx-auto px-6 md:px-0">
+          <div class="flex item-center justify-center md:justify-between flex-col lg:flex-row gap-20">
+            <div class="w-full lg:w-1/2">
+              <div class="bg-white border border-gray-200 rounded-lg p-6 md:p-10 shadow-sm h-full">
+                <h2 class="text-lg font-semibold text-gray-900 mb-6" data-i18n="generateVideo">
+                  Generar Video
+                </h2>
+                <form id="videoForm" class="space-y-6">
+                  <div class="relative">
+                    <label
+                      for="cityInput"
+                      class="block text-sm font-medium text-gray-700 mb-2"
+                      data-i18n="city"
                     >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      ></path>
-                    </svg>
-                    <svg
-                      id="loadingIcon"
-                      class="hidden w-5 h-5 text-blue-500 animate-spin"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      aria-label="Loading cities"
-                    >
-                      <circle
-                        class="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        stroke-width="4"
-                      ></circle>
-                      <path
-                        class="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
+                      Ciudad
+                    </label>
+                    <div class="relative">
+                      <input
+                        type="text"
+                        id="cityInput"
+                        placeholder="Ej: Curitiba, Paris, Tokyo..."
+                        data-i18n="cityPlaceholder"
+                        required
+                        autocomplete="off"
+                        class="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                      />
+                      <div
+                        class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
+                      >
+                        <svg
+                          id="searchIcon"
+                          class="w-5 h-5 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                          ></path>
+                        </svg>
+                        <svg
+                          id="loadingIcon"
+                          class="hidden w-5 h-5 text-blue-500 animate-spin"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          aria-label="Loading cities"
+                        >
+                          <circle
+                            class="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            stroke-width="4"
+                          ></circle>
+                          <path
+                            class="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                      </div>
+                    </div>
+                    <div
+                      id="cityAutocomplete"
+                      class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+                    ></div>
                   </div>
-                </div>
+  
+                  <button
+                    type="submit"
+                    id="generateBtn"
+                    class="w-full bg-blue-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    data-i18n="generateVideo"
+                  >
+                    Generar Video
+                  </button>
+                </form>
+                <!-- Status Message -->
                 <div
-                  id="cityAutocomplete"
-                  class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+                  id="status"
+                  class="mt-6 text-sm text-center hidden"
+                  role="status"
+                  aria-live="polite"
                 ></div>
-              </div>
-
-              <button
-                type="submit"
-                id="generateBtn"
-                class="w-full bg-blue-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                data-i18n="generateVideo"
-              >
-                Generar Video
-              </button>
-            </form>
-
-            <!-- Status Message -->
-            <div id="status" class="mt-6 text-sm text-center hidden" role="status" aria-live="polite"></div>
-
-            <!-- Progress Steps -->
-            <div id="progressSteps" class="mt-8 hidden" role="progressbar" aria-label="Video generation progress">
-              <div class="grid grid-cols-2 gap-2">
+                <!-- Progress Steps -->
                 <div
-                  id="step1"
-                  class="step text-center py-2 px-3 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium"
-                  data-i18n="stepWeather"
+                  id="progressSteps"
+                  class="mt-8 hidden"
+                  role="progressbar"
+                  aria-label="Video generation progress"
                 >
-                  Clima
-                </div>
-                <div
-                  id="step2"
-                  class="step text-center py-2 px-3 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium"
-                  data-i18n="stepAI"
-                >
-                  Imagen IA
-                </div>
-                <div
-                  id="step3"
-                  class="step text-center py-2 px-3 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium"
-                  data-i18n="stepRendering"
-                >
-                  Renderizado
-                </div>
-                <div
-                  id="step4"
-                  class="step text-center py-2 px-3 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium"
-                  data-i18n="stepCompleted"
-                >
-                  Completado
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Video Preview Section -->
-        <div id="videoPreview" class="hidden">
-          <div
-            class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm h-full flex flex-col"
-          >
-            <div
-              class="flex-1 bg-gray-50 flex items-center justify-center relative"
-            >
-              <!-- Video Element -->
-              <video
-                id="previewVideo"
-                controls
-                class="w-full h-full object-contain"
-                style="max-height: 600px"
-                aria-label="Generated weather video preview"
-              ></video>
-
-              <!-- Loading Animation -->
-              <div
-                id="videoLoading"
-                class="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 flex flex-col items-center justify-center p-8"
-                style="display: none"
-                role="status"
-                aria-live="polite"
-                aria-label="Video generation in progress"
-              >
-                <!-- Spinning circles -->
-                <div class="mb-8">
-                  <div class="relative w-24 h-24 mx-auto">
+                  <div class="grid grid-cols-2 gap-2">
                     <div
-                      class="absolute inset-0 border-4 border-blue-200 rounded-full"
-                    ></div>
+                      id="step1"
+                      class="step text-center py-2 px-3 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium"
+                      data-i18n="stepWeather"
+                    >
+                      Clima
+                    </div>
                     <div
-                      class="absolute inset-0 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"
-                    ></div>
+                      id="step2"
+                      class="step text-center py-2 px-3 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium"
+                      data-i18n="stepAI"
+                    >
+                      Imagen IA
+                    </div>
                     <div
-                      class="absolute inset-2 border-4 border-purple-200 rounded-full"
-                    ></div>
+                      id="step3"
+                      class="step text-center py-2 px-3 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium"
+                      data-i18n="stepRendering"
+                    >
+                      Renderizado
+                    </div>
                     <div
-                      class="absolute inset-2 border-4 border-purple-600 border-b-transparent rounded-full animate-spin"
-                      style="
-                        animation-direction: reverse;
-                        animation-duration: 1s;
-                      "
-                    ></div>
+                      id="step4"
+                      class="step text-center py-2 px-3 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium"
+                      data-i18n="stepCompleted"
+                    >
+                      Completado
+                    </div>
                   </div>
                 </div>
-
-                <!-- Funny Messages Below -->
-                <div class="text-center max-w-md">
-                  <p
-                    id="funnyMessage"
-                    class="text-lg font-medium text-gray-800 mb-2 min-h-[3rem] flex items-center justify-center"
+              </div>
+            </div>
+            <!-- Video Preview Section -->
+            <div class="w-full lg:w-1/2">
+              <div id="videoPreview" class="hidden h-full">
+                <div
+                  class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm h-full flex flex-col"
+                >
+                  <div
+                    class="flex-1 bg-gray-50 flex items-center justify-center relative"
                   >
-                    ✨ Generating your video...
-                  </p>
-                  <p class="text-sm text-gray-600" data-i18n="takeMoment">
-                    This might take a moment
-                  </p>
+                    <!-- Video Element -->
+                    <video
+                      id="previewVideo"
+                      controls
+                      class="w-full h-auto object-contain"
+                      style="max-height: 400px"
+                      aria-label="Generated weather video preview"
+                    ></video>
+      
+                    <!-- Loading Animation -->
+                    <div
+                      id="videoLoading"
+                      class="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 flex flex-col items-center justify-center p-8 gap-8"
+                      style="display: none"
+                      role="status"
+                      aria-live="polite"
+                      aria-label="Video generation in progress"
+                    >
+                      <!-- Spinning circles -->
+                      <div class="mb-8">
+                        <div class="relative w-24 h-24 mx-auto">
+                          <div class="absolute inset-0 border-4 border-blue-200 rounded-full"></div>
+                          <div class="absolute inset-0 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                          <div class="absolute inset-2 border-4 border-purple-200 rounded-full"></div>
+                          <div class="absolute inset-2 border-4 border-purple-600 border-b-transparent rounded-full animate-spin"
+                            style="
+                              animation-direction: reverse;
+                              animation-duration: 1s;
+                            "
+                          ></div>
+                        </div>
+                      </div>
+      
+                      <!-- Funny Messages Below -->
+                      <div class="text-center mx-auto">
+                        <p
+                          id="funnyMessage"
+                          class="text-lg font-medium text-gray-800 mb-2 min-h-[3rem] flex items-center justify-center"
+                        >
+                          ✨ Generating your video...
+                        </p>
+                        <p class="text-sm text-gray-600" data-i18n="takeMoment">
+                          This might take a moment
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="p-6 border-t border-gray-200">
+                    <button
+                      id="downloadBtn"
+                      class="w-full bg-gray-900 text-white font-medium py-3 px-6 rounded-lg hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 transition"
+                      data-i18n="downloadVideo"
+                    >
+                      Descargar Video
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="p-6 border-t border-gray-200">
-              <button
-                id="downloadBtn"
-                class="w-full bg-gray-900 text-white font-medium py-3 px-6 rounded-lg hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 transition"
-                data-i18n="downloadVideo"
-              >
-                Descargar Video
-              </button>
-            </div>
           </div>
         </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16">
+          <!-- Generator Section -->
+
+
       </section>
 
       <!-- Recent Videos Gallery -->
-      <section class="bg-gray-50 p-8 rounded-lg shadow-sm" aria-label="Recent videos">
-        <div id="recentVideos" class="hidden">
+      <section
+        class="bg-gray-50 py-12 px-4 shadow-sm"
+        aria-label="Recent videos"
+      >
+        <div id="recentVideos" class="hidden container mx-auto">
           <div class="flex items-center justify-between mb-6">
             <h2
               class="text-2xl font-semibold text-gray-900"
@@ -611,10 +648,10 @@
       </section>
 
       <!-- Features Section -->
-      <section class="mt-20 pt-20 border-t border-gray-200" aria-label="Features">
-        <div class="text-center mb-12">
+      <section class="pt-20 container mx-auto" aria-label="Features">
+        <div class="text-center mb-12 px-6">
           <h2
-            class="text-2xl font-bold text-gray-900 mb-2"
+            class="text-3xl font-bold text-gray-900 mb-2"
             data-i18n="features"
           >
             Características
@@ -624,95 +661,100 @@
           </p>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
-          <div class="text-center">
-            <div
-              class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4"
-              aria-hidden="true"
-            >
-              <svg
-                class="w-6 h-6 text-blue-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="mx-6 p-6 md:p-10 border border-b-gray-300 rounded-lg">
+            <div class="text-center px-6">
+              <div
+                class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4"
+                aria-hidden="true"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                ></path>
-              </svg>
+                <svg
+                  class="w-6 h-6 text-blue-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                  ></path>
+                </svg>
+              </div>
+              <h3
+                class="text-lg font-semibold text-gray-900 mb-2"
+                data-i18n="aiGenerative"
+              >
+                IA Generativa
+              </h3>
+              <p class="text-sm text-gray-600" data-i18n="aiGenerativeDesc">
+                Imágenes isométricas 3D únicas generadas con Google Gemini
+              </p>
             </div>
-            <h3
-              class="text-lg font-semibold text-gray-900 mb-2"
-              data-i18n="aiGenerative"
-            >
-              IA Generativa
-            </h3>
-            <p class="text-sm text-gray-600" data-i18n="aiGenerativeDesc">
-              Imágenes isométricas 3D únicas generadas con Google Gemini
-            </p>
           </div>
 
-          <div class="text-center">
-            <div
-              class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4"
-              aria-hidden="true"
-            >
-              <svg
-                class="w-6 h-6 text-green-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+          <div class="mx-6 p-6 md:p-10 border border-b-gray-300 rounded-lg">
+            <div class="text-center">
+              <div
+                class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4"
+                aria-hidden="true"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
-                ></path>
-              </svg>
+                <svg
+                  class="w-6 h-6 text-green-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
+                  ></path>
+                </svg>
+              </div>
+              <h3
+                class="text-lg font-semibold text-gray-900 mb-2"
+                data-i18n="realWeather"
+              >
+                Clima Real
+              </h3>
+              <p class="text-sm text-gray-600" data-i18n="realWeatherDesc">
+                Datos meteorológicos en tiempo real de OpenWeatherMap
+              </p>
             </div>
-            <h3
-              class="text-lg font-semibold text-gray-900 mb-2"
-              data-i18n="realWeather"
-            >
-              Clima Real
-            </h3>
-            <p class="text-sm text-gray-600" data-i18n="realWeatherDesc">
-              Datos meteorológicos en tiempo real de OpenWeatherMap
-            </p>
           </div>
-
-          <div class="text-center">
-            <div
-              class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4"
-              aria-hidden="true"
-            >
-              <svg
-                class="w-6 h-6 text-purple-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+          <div class="mx-6 p-6 md:p-10 border border-b-gray-300 rounded-lg">
+            <div class="text-center">
+              <div
+                class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4"
+                aria-hidden="true"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13 10V3L4 14h7v7l9-11h-7z"
-                ></path>
-              </svg>
+                <svg
+                  class="w-6 h-6 text-purple-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  ></path>
+                </svg>
+              </div>
+              <h3
+                class="text-lg font-semibold text-gray-900 mb-2"
+                data-i18n="superFast"
+              >
+                Súper Rápido
+              </h3>
+              <p class="text-sm text-gray-600" data-i18n="superFastDesc">
+                Videos de 5 segundos renderizados en menos de un minuto
+              </p>
             </div>
-            <h3
-              class="text-lg font-semibold text-gray-900 mb-2"
-              data-i18n="superFast"
-            >
-              Súper Rápido
-            </h3>
-            <p class="text-sm text-gray-600" data-i18n="superFastDesc">
-              Videos de 5 segundos renderizados en menos de un minuto
-            </p>
           </div>
         </div>
       </section>
@@ -721,7 +763,7 @@
     <!-- Footer -->
     <footer class="border-t border-gray-200 mt-20">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <p class="text-center text-sm text-gray-500" data-i18n="footer">
+        <p class="text-center text-sm text-gray-500">
           Powered by GuayoyoLTDA
         </p>
       </div>

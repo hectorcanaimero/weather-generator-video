@@ -4,7 +4,7 @@ import { renderMedia, selectComposition } from "@remotion/renderer";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
-import { uploadVideo } from "../config/minio.js";
+import { uploadVideo } from "../config/minio";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
