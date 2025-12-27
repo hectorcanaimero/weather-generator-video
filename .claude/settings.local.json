@@ -20,7 +20,10 @@
       "Bash(npm run docker:run:*)",
       "Bash(xargs docker stop:*)",
       "Bash(docker build:*)",
-      "Bash(docker system prune:*)"
+      "Bash(docker system prune:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)"
     ]
   }
 }

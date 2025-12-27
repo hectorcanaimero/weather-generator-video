@@ -43,6 +43,9 @@ COPY package*.json ./
 # Install all dependencies (we need tsx and TypeScript in production)
 RUN npm ci
 
+# Force rebuild - updated 2025-12-27
+RUN echo "Force rebuild to apply chromium fixes"
+
 # Copy application files from builder
 COPY --from=builder /app/server ./server
 COPY --from=builder /app/src ./src
