@@ -67,6 +67,10 @@ router.post("/", async (req, res) => {
         language,
       },
       browserExecutable: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+      chromiumOptions: {
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+      },
     });
 
     console.log(`🎥 Rendering video...`);
@@ -84,6 +88,10 @@ router.post("/", async (req, res) => {
         language,
       },
       browserExecutable: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+      chromiumOptions: {
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+      },
     });
 
     console.log(`✅ Video rendered successfully: ${outputFilename}`);

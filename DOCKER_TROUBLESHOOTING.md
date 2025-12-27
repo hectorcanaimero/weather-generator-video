@@ -90,15 +90,23 @@ Haz una petición para generar un video y busca estos logs:
 **Solución:** Ya está corregido en el Dockerfile actualizado.
 
 ### Error: "Failed to launch the browser process"
-**Causa:** Remotion intenta usar su propio Chrome descargado en lugar del Chromium del sistema.
+**Causa:** Remotion intenta usar su propio Chrome descargado en lugar del Chromium del sistema, o el modo headless antiguo no está disponible.
 **Solución:** Ya está corregido en `render-video.ts` con:
 
 ```typescript
 // En selectComposition y renderMedia:
 browserExecutable: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+chromiumOptions: {
+  headless: true,
+  args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+},
 ```
 
-Esto le dice a Remotion que use el Chromium instalado en el sistema (`/usr/bin/chromium-browser`) en lugar de intentar descargar su propio Chrome.
+Esto le dice a Remotion que:
+1. Use el Chromium instalado en el sistema (`/usr/bin/chromium-browser`)
+2. Use el nuevo modo headless
+3. Deshabilite sandbox (necesario en Docker)
+4. Deshabilite `/dev/shm` (evita problemas de memoria compartida en contenedores)
 
 ### Video se genera pero está en blanco
 **Causa:** Fuentes o recursos no se cargan correctamente.
