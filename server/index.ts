@@ -8,6 +8,7 @@ import weatherRouter from "./routes/weather.js";
 import imageRouter from "./routes/generate-image.js";
 import renderRouter from "./routes/render-video.js";
 import listVideosRouter from "./routes/list-videos.js";
+import geocodeRouter from "./routes/geocode.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,6 +28,7 @@ app.use("/api/weather", weatherRouter);
 app.use("/api/generate-image", imageRouter);
 app.use("/api/render-video", renderRouter);
 app.use("/api/videos", listVideosRouter);
+app.use("/api/geocode", geocodeRouter);
 
 // Serve videos
 app.use("/videos", express.static(path.join(__dirname, "../out")));

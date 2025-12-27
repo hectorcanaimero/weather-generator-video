@@ -4,7 +4,14 @@
       "Bash(npm run lint:*)",
       "Bash(cat:*)",
       "Bash(git checkout:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(npm run dev:*)",
+      "Bash(pkill:*)",
+      "Bash(if [ -f .env ])",
+      "Bash(then echo \"=== .env file exists ===\")",
+      "Bash(else echo \".env file not found\")",
+      "Bash(fi)",
+      "Bash(find:*)"
     ]
   }
 }

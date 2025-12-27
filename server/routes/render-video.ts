@@ -23,17 +23,18 @@ interface RenderRequest {
   city: string;
   weatherData: WeatherData;
   imageFilename: string;
+  language?: string;
 }
 
 router.post("/", async (req, res) => {
-  const { city, weatherData, imageFilename } = req.body as RenderRequest;
+  const { city, weatherData, imageFilename, language = 'en' } = req.body as RenderRequest;
 
   if (!city || !weatherData || !imageFilename) {
     return res.status(400).json({ error: "Missing required parameters" });
   }
 
   try {
-    console.log(`🎬 Starting video render for ${city}...`);
+    console.log(`🎬 Starting video render for ${city} (${language})...`);
 
     // Paths
     const projectRoot = path.join(__dirname, "../..");
@@ -63,6 +64,7 @@ router.post("/", async (req, res) => {
         condition: weatherData.condition,
         date: weatherData.date,
         useAI: true,
+        language,
       },
     });
 
@@ -78,6 +80,7 @@ router.post("/", async (req, res) => {
         condition: weatherData.condition,
         date: weatherData.date,
         useAI: true,
+        language,
       },
     });
 

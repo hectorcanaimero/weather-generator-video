@@ -18,7 +18,7 @@ interface WeatherData {
 }
 
 router.post("/", async (req, res) => {
-  const { city, weatherData } = req.body as { city: string; weatherData: WeatherData };
+  const { city, weatherData, language = 'en' } = req.body as { city: string; weatherData: WeatherData; language?: string };
 
   if (!city || !weatherData) {
     return res.status(400).json({ error: "City and weather data are required" });
@@ -30,15 +30,32 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    console.log(`🎨 Generating AI image for ${city}...`);
+    console.log(`🎨 Generating AI image for ${city} (${language})...`);
 
-    // Create weather description for the image prompt
-    const weatherDesc = {
-      sunny: "bright sunny day with clear blue sky",
-      cloudy: "overcast sky with soft diffused light",
-      rain: "gentle rainfall with wet reflective surfaces",
-      storm: "dramatic storm with dark clouds and lightning",
-    }[weatherData.condition] || "current weather conditions";
+    // Weather descriptions in different languages
+    const weatherDescriptions = {
+      en: {
+        sunny: "bright sunny day with clear blue sky",
+        cloudy: "overcast sky with soft diffused light",
+        rain: "gentle rainfall with wet reflective surfaces",
+        storm: "dramatic storm with dark clouds and lightning",
+      },
+      es: {
+        sunny: "día soleado brillante con cielo azul despejado",
+        cloudy: "cielo nublado con luz difusa suave",
+        rain: "lluvia suave con superficies reflectantes mojadas",
+        storm: "tormenta dramática con nubes oscuras y relámpagos",
+      },
+      pt: {
+        sunny: "dia ensolarado brilhante com céu azul claro",
+        cloudy: "céu nublado com luz difusa suave",
+        rain: "chuva suave com superfícies refletoras molhadas",
+        storm: "tempestade dramática com nuvens escuras e relâmpagos",
+      }
+    };
+
+    const langDescriptions = weatherDescriptions[language as keyof typeof weatherDescriptions] || weatherDescriptions.en;
+    const weatherDesc = langDescriptions[weatherData.condition as keyof typeof langDescriptions] || "current weather conditions";
 
     const prompt = `Create a 45° top-down isometric miniature 3D diorama scene of ${city}, featuring its most iconic landmarks and architectural elements. Use soft, refined textures with realistic PBR materials and gentle, lifelike lighting and shadows. Show ${weatherDesc} integrated into the city environment to create an immersive atmospheric mood.
 

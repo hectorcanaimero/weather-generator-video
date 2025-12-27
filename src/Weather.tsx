@@ -21,6 +21,7 @@ interface WeatherProps {
   condition?: "rain" | "sunny" | "cloudy" | "storm";
   date?: string;
   useAI?: boolean;
+  language?: string;
 }
 
 const weatherIcons: Record<string, string> = {
@@ -30,12 +31,35 @@ const weatherIcons: Record<string, string> = {
   storm: "⛈️",
 };
 
+// Condition translations
+const conditionTranslations = {
+  en: {
+    rain: "Rainy",
+    sunny: "Sunny",
+    cloudy: "Cloudy",
+    storm: "Stormy",
+  },
+  es: {
+    rain: "Lluvioso",
+    sunny: "Soleado",
+    cloudy: "Nublado",
+    storm: "Tormentoso",
+  },
+  pt: {
+    rain: "Chuvoso",
+    sunny: "Ensolarado",
+    cloudy: "Nublado",
+    storm: "Tempestuoso",
+  },
+};
+
 export default function Weather({
   city = "CURITIBA",
   temperature: defaultTemperature = 31,
   condition: defaultCondition = "storm",
   date: defaultDate = "Friday, December 26, 2025",
   useAI = true,
+  language = "en",
 }: WeatherProps) {
   const frame = useCurrentFrame();
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
@@ -44,7 +68,10 @@ export default function Weather({
   const temperature = weatherData?.temperature ?? defaultTemperature;
   const condition = (weatherData?.condition ?? defaultCondition) as keyof typeof weatherIcons;
   const date = weatherData?.date ?? defaultDate;
-  const displayCity = weatherData?.city ?? city;
+  const rawCity = weatherData?.city ?? city;
+
+  // Format city name: First letter uppercase, rest lowercase
+  const displayCity = rawCity.charAt(0).toUpperCase() + rawCity.slice(1).toLowerCase();
 
   const cityOpacity = interpolate(frame, [0, 30], [0, 1], {
     easing: Easing.out(Easing.ease),
