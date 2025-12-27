@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 # Docker Compose para Coolify (Redis externo)
 # Asegurar que REDIS_URL esté configurado en las variables de entorno de Coolify
@@ -30,16 +30,21 @@ services:
       - ./out:/app/out
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/api/health"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:3001/api/health",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
     networks:
       - weather-network
-    labels:
-      # Traefik port configuration (critical for reverse proxy)
-      - "traefik.http.services.weather-video.loadbalancer.server.port=3001"
 
   # Worker process (separate container for scaling)
   weather-video-worker:
