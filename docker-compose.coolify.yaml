@@ -1,0 +1,71 @@
+version: '3.8'
+
+# Docker Compose para Coolify (Redis externo)
+# Uso: REDIS_URL debe estar configurado en las variables de entorno de Coolify
+
+services:
+  # Main application server
+  weather-video:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+      platforms:
+        - linux/amd64
+    container_name: weather-video-app
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
+      - MINIO_ENDPOINT=${MINIO_ENDPOINT}
+      - MINIO_PORT=${MINIO_PORT:-443}
+      - MINIO_USE_SSL=${MINIO_USE_SSL:-true}
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_BUCKET=${MINIO_BUCKET:-weather}
+      - REDIS_URL=${REDIS_URL}
+    volumes:
+      - ./out:/app/out
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - weather-network
+
+  # Worker process (separate container for scaling)
+  weather-video-worker:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+      platforms:
+        - linux/amd64
+    container_name: weather-video-worker
+    environment:
+      - NODE_ENV=production
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
+      - MINIO_ENDPOINT=${MINIO_ENDPOINT}
+      - MINIO_PORT=${MINIO_PORT:-443}
+      - MINIO_USE_SSL=${MINIO_USE_SSL:-true}
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_BUCKET=${MINIO_BUCKET:-weather}
+      - REDIS_URL=${REDIS_URL}
+    volumes:
+      - ./out:/app/out
+    command: ["npx", "tsx", "server/worker-process.ts"]
+    restart: unless-stopped
+    networks:
+      - weather-network
+
+networks:
+  weather-network:
+    driver: bridge
