@@ -47,7 +47,8 @@ services:
       retries: 3
       start_period: 40s
     networks:
-      - weather-network
+      weather-network:
+      default:
 
   # Worker process (separate container for scaling)
   weather-video-worker:
@@ -76,8 +77,13 @@ services:
       - 1.1.1.1
       - 8.8.8.8
     networks:
-      - weather-network
+      weather-network:
+      default:
 
 networks:
   weather-network:
+    name: weather-network
     driver: bridge
+  default:
+    external: true
+    name: ${COOLIFY_NETWORK:-coolify}
