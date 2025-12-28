@@ -2,9 +2,17 @@ import * as Minio from "minio";
 import fs from "fs";
 import path from "path";
 
+/**
+ * Sanitize endpoint by removing protocol if present
+ * MinIO client only accepts hostname, not full URLs
+ */
+function sanitizeEndpoint(endpoint: string): string {
+  return endpoint.replace(/^https?:\/\//, "");
+}
+
 // MinIO client configuration
 const minioClient = new Minio.Client({
-  endPoint: process.env.MINIO_ENDPOINT || "localhost",
+  endPoint: sanitizeEndpoint(process.env.MINIO_ENDPOINT || "localhost"),
   port: parseInt(process.env.MINIO_PORT || "9000"),
   useSSL: process.env.MINIO_USE_SSL === "true",
   accessKey: process.env.MINIO_ACCESS_KEY || "minioadmin",
@@ -18,7 +26,9 @@ const BUCKET_NAME = process.env.MINIO_BUCKET || "weather-videos";
  */
 export async function initBucket(): Promise<boolean> {
   try {
-    console.log(`🔗 Connecting to MinIO at ${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}...`);
+    const endpoint = sanitizeEndpoint(process.env.MINIO_ENDPOINT || "localhost");
+    const protocol = process.env.MINIO_USE_SSL === "true" ? "https" : "http";
+    console.log(`🔗 Connecting to MinIO at ${protocol}://${endpoint}:${process.env.MINIO_PORT}...`);
 
     const exists = await minioClient.bucketExists(BUCKET_NAME);
 
@@ -112,7 +122,7 @@ export async function uploadVideo(
 export async function getPublicUrl(filename: string): Promise<string> {
   // For public buckets, construct the direct URL
   const protocol = process.env.MINIO_USE_SSL === "true" ? "https" : "http";
-  const endpoint = process.env.MINIO_ENDPOINT || "localhost";
+  const endpoint = sanitizeEndpoint(process.env.MINIO_ENDPOINT || "localhost");
   const port = process.env.MINIO_PORT || "9000";
 
   // If using standard ports (80/443), don't include port in URL
