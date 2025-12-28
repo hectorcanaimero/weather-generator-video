@@ -29,6 +29,9 @@ services:
     volumes:
       - ./out:/app/out
     restart: unless-stopped
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
     healthcheck:
       test:
         [
@@ -69,6 +72,9 @@ services:
       - ./out:/app/out
     command: ["npx", "tsx", "server/worker-process.ts"]
     restart: unless-stopped
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
     networks:
       - weather-network
 
