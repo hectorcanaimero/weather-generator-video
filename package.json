@@ -58,6 +58,7 @@
     "upgrade": "remotion upgrade",
     "lint": "eslint src && tsc",
     "generate:weather": "tsx scripts/generate-weather-images.ts",
+    "test:minio": "tsx scripts/test-minio.ts",
     "docker:build": "docker build --platform linux/amd64 -t weather-video:latest .",
     "docker:run": "docker run --platform linux/amd64 -p 3001:3001 --env-file .env weather-video:latest",
     "docker:compose:up": "docker-compose up -d",

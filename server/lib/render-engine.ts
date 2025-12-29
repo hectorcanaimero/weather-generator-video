@@ -45,7 +45,18 @@ export async function renderVideoFile(
     const projectRoot = path.join(__dirname, "../..");
     const entryPoint = path.join(projectRoot, "src/index.ts");
     const outputDir = path.join(projectRoot, "out");
-    const outputFilename = `weather-${city.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}.mp4`;
+
+    // Sanitize city name for filename (remove accents, special chars, keep only alphanumeric and hyphens)
+    const sanitizedCity = city
+      .toLowerCase()
+      .normalize("NFD") // Decompose accented characters
+      .replace(/[\u0300-\u036f]/g, "") // Remove diacritics
+      .replace(/[^a-z0-9\s-]/g, "") // Remove non-alphanumeric except spaces and hyphens
+      .replace(/\s+/g, "-") // Replace spaces with hyphens
+      .replace(/-+/g, "-") // Replace multiple hyphens with single
+      .trim();
+
+    const outputFilename = `weather-${sanitizedCity}-${Date.now()}.mp4`;
     const outputPath = path.join(outputDir, outputFilename);
 
     // Ensure output directory exists
