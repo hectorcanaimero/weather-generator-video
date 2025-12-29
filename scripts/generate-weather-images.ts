@@ -152,9 +152,32 @@ IMPORTANT:
 
     console.log("✅ Image generated successfully!");
 
-    // Generate filename
-    const filename = `${city.toLowerCase().replace(/\s+/g, "-")}.png`;
+    // Generate filename with condition
+    const cityKey = city.toLowerCase().replace(/\s+/g, "-");
+    const condition = (weatherData.condition || "sunny").toLowerCase();
+    const filename = `${cityKey}-${condition}.png`;
     const filepath = path.join(outputDir, filename);
+
+    // Check if file already exists
+    if (fs.existsSync(filepath)) {
+      console.log(`♻️ Image already exists: ${filename}`);
+      console.log(`   Skipping generation (reusing existing image)`);
+      return {
+        city,
+        temperature: weatherData.temperature || 20,
+        condition: weatherData.condition || "sunny",
+        description: weatherData.description || "Pleasant weather",
+        date:
+          weatherData.date ||
+          new Date().toLocaleDateString("en-US", {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          }),
+        filename,
+      };
+    }
 
     console.log(`📥 Saving to ${filepath}...`);
 

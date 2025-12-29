@@ -89,6 +89,7 @@ export function emitJobCompleted(
 
   io.to(`job:${jobId}`).emit("job:completed", event);
   console.log(`📡 Emitted job:completed for ${jobId}`);
+  console.log(`   Event data:`, JSON.stringify(event, null, 2));
 }
 
 /**

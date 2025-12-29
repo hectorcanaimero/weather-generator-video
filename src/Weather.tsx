@@ -22,6 +22,7 @@ interface WeatherProps {
   date?: string;
   useAI?: boolean;
   language?: string;
+  imageFilename?: string;
 }
 
 const weatherIcons: Record<string, string> = {
@@ -60,6 +61,7 @@ export default function Weather({
   date: defaultDate = "Friday, December 26, 2025",
   useAI = true,
   language = "en",
+  imageFilename,
 }: WeatherProps) {
   const frame = useCurrentFrame();
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
@@ -138,6 +140,8 @@ export default function Weather({
       {useAI ? (
         <WeatherBackgroundWithAI
           city={city}
+          condition={defaultCondition}
+          imageFilename={imageFilename}
           onWeatherDataLoaded={(data) => setWeatherData(data)}
         />
       ) : (

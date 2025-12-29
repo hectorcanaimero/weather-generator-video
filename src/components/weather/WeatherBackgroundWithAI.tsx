@@ -12,11 +12,15 @@ interface WeatherData {
 
 interface WeatherBackgroundWithAIProps {
   city: string;
+  condition?: string;
+  imageFilename?: string;
   onWeatherDataLoaded?: (data: WeatherData) => void;
 }
 
 export default function WeatherBackgroundWithAI({
   city,
+  condition,
+  imageFilename,
   onWeatherDataLoaded,
 }: WeatherBackgroundWithAIProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -27,7 +31,35 @@ export default function WeatherBackgroundWithAI({
 
     async function loadImage() {
       try {
-        // Try to load pre-generated image from manifest
+        // If we have the exact filename, use it directly
+        if (imageFilename) {
+          const imageUrl = staticFile(`weather-bg/${imageFilename}`);
+          console.log(`✅ Using specified image: ${imageFilename}`);
+
+          if (!cancelled) {
+            setImageUrl(imageUrl);
+            continueRender(handle);
+          }
+          return;
+        }
+
+        // Otherwise, construct filename from city + condition
+        if (condition) {
+          const cityKey = city.toLowerCase().replace(/\s+/g, "-");
+          const conditionKey = condition.toLowerCase();
+          const filename = `${cityKey}-${conditionKey}.png`;
+          const imageUrl = staticFile(`weather-bg/${filename}`);
+
+          console.log(`✅ Using constructed filename: ${filename}`);
+
+          if (!cancelled) {
+            setImageUrl(imageUrl);
+            continueRender(handle);
+          }
+          return;
+        }
+
+        // Fallback: Try to load from manifest
         const manifestUrl = staticFile("weather-bg/manifest.json");
         const response = await fetch(manifestUrl);
 
@@ -38,7 +70,7 @@ export default function WeatherBackgroundWithAI({
 
           if (weatherData) {
             const imageUrl = staticFile(`weather-bg/${weatherData.filename}`);
-            console.log(`✅ Using pre-generated image: ${weatherData.filename}`);
+            console.log(`✅ Using pre-generated image from manifest: ${weatherData.filename}`);
             console.log(`🌤️ Weather data:`, weatherData);
 
             if (!cancelled) {
@@ -72,7 +104,7 @@ export default function WeatherBackgroundWithAI({
     return () => {
       cancelled = true;
     };
-  }, [city, handle, onWeatherDataLoaded]);
+  }, [city, condition, imageFilename, handle, onWeatherDataLoaded]);
 
   return (
     <AbsoluteFill>

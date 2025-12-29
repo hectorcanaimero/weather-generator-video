@@ -233,6 +233,15 @@ function showVideoLoading() {
   videoLoading.style.display = "flex";
   previewVideo.style.display = "none";
 
+  // Initialize circular progress bar to 0%
+  const progressCircle = document.getElementById("progressCircle");
+  const progressPercentage = document.getElementById("progressPercentage");
+  if (progressCircle && progressPercentage) {
+    const circumference = 351.86; // 2 * π * 56
+    progressCircle.style.strokeDashoffset = circumference; // Start at 0%
+    progressPercentage.textContent = "0%";
+  }
+
   const lang = getCurrentLanguage();
   const messages = funnyMessages[lang];
   let messageIndex = 0;
@@ -499,6 +508,19 @@ form.addEventListener("submit", async (e) => {
       return;
     }
 
+    // Check for daily generation limit (503 Service Unavailable)
+    if (imageResponse.status === 503) {
+      const errorData = await imageResponse.json();
+
+      hideVideoLoading();
+      showStatus(errorData.message || t("errorImage"), "error");
+
+      // Show generic high demand message
+      console.warn("Daily generation limit reached:", errorData);
+
+      return;
+    }
+
     if (!imageResponse.ok) {
       throw new Error(t("errorImage"));
     }
@@ -511,6 +533,29 @@ form.addEventListener("submit", async (e) => {
 
     const imageData = await imageResponse.json();
     updateStep(step2, "completed");
+
+    // Update weatherData with the localized date from the API response
+    if (imageData.weatherData && imageData.weatherData.date) {
+      weatherData.date = imageData.weatherData.date;
+    }
+
+    // Show generated/reused image
+    const generatedImagePreview = document.getElementById("generatedImagePreview");
+    const generatedImage = document.getElementById("generatedImage");
+    const imageStatusText = document.getElementById("imageStatusText");
+
+    if (generatedImagePreview && generatedImage && imageData.imageUrl) {
+      generatedImage.src = imageData.imageUrl;
+
+      if (imageData.reused) {
+        imageStatusText.textContent = "♻️ " + t("imageReused");
+      } else {
+        imageStatusText.textContent = "✨ " + t("imageGenerated");
+      }
+
+      generatedImagePreview.classList.remove("hidden");
+      console.log(`🖼️ Showing image: ${imageData.imageUrl} (reused: ${imageData.reused})`);
+    }
 
     // Step 3: Render video (Queue job)
     updateStep(step3, "active");
@@ -546,12 +591,33 @@ form.addEventListener("submit", async (e) => {
     socket.on("job:progress", (data) => {
       console.log("Job progress:", data);
       const progressPercent = Math.round(data.progress);
+
+      // Update circular progress bar
+      const progressCircle = document.getElementById("progressCircle");
+      const progressPercentage = document.getElementById("progressPercentage");
+
+      if (progressCircle && progressPercentage) {
+        const circumference = 351.86; // 2 * π * 56
+        const offset = circumference - (progressPercent / 100) * circumference;
+        progressCircle.style.strokeDashoffset = offset;
+        progressPercentage.textContent = `${progressPercent}%`;
+      }
+
       showStatus(`${t("renderingVideo")} - ${progressPercent}%`, "loading");
     });
 
     // Listen for job completion
     socket.on("job:completed", (data) => {
-      console.log("Job completed:", data);
+      console.log("✅ Job completed event received!");
+      console.log("Event data:", JSON.stringify(data, null, 2));
+
+      // Set progress to 100%
+      const progressCircle = document.getElementById("progressCircle");
+      const progressPercentage = document.getElementById("progressPercentage");
+      if (progressCircle && progressPercentage) {
+        progressCircle.style.strokeDashoffset = 0; // 100% complete
+        progressPercentage.textContent = "100%";
+      }
 
       // Unsubscribe and disconnect
       socket.emit("unsubscribe:job", jobId);
@@ -584,6 +650,15 @@ form.addEventListener("submit", async (e) => {
     // Listen for job failure
     socket.on("job:failed", (data) => {
       console.error("Job failed:", data);
+
+      // Reset progress bar
+      const progressCircle = document.getElementById("progressCircle");
+      const progressPercentage = document.getElementById("progressPercentage");
+      if (progressCircle && progressPercentage) {
+        const circumference = 351.86;
+        progressCircle.style.strokeDashoffset = circumference;
+        progressPercentage.textContent = "0%";
+      }
 
       // Unsubscribe and disconnect
       socket.emit("unsubscribe:job", jobId);

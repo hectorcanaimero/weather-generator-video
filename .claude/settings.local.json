@@ -32,7 +32,21 @@
       "Bash(curl:*)",
       "Bash(jq:*)",
       "Bash(kill:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(npm run test:minio:*)",
+      "Bash(npm run check:env:*)",
+      "Bash(npm run debug:docker-env:*)",
+      "Bash(npm run test:upload:*)",
+      "Bash(docker-compose down:*)",
+      "Bash(docker compose:*)",
+      "Bash(npm run migrate:videos:*)",
+      "Bash(sqlite3:*)",
+      "Bash(npm run migrate:images:*)",
+      "Bash(npm run test:image-reuse:*)",
+      "Bash(npm run test:generation-limit:*)",
+      "Bash(npm run test:date-localization:*)",
+      "Bash(tsx scripts/test-curitiba-video.ts:*)",
+      "Bash(npx tsx:*)"
     ]
   }
 }

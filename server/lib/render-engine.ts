@@ -3,7 +3,7 @@ import { renderMedia, selectComposition } from "@remotion/renderer";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
-import { uploadVideo } from "../config/minio.js";
+import { uploadVideo } from "../config/minio";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -33,7 +33,7 @@ export interface RenderResult {
  */
 export async function renderVideoFile(
   options: RenderOptions,
-  onProgress?: (stage: string, progress: number) => void
+  onProgress?: (stage: string, progress: number) => void,
 ): Promise<RenderResult> {
   const { city, weatherData, imageFilename, language } = options;
 
@@ -86,6 +86,7 @@ export async function renderVideoFile(
         date: weatherData.date,
         useAI: true,
         language,
+        imageFilename, // Pass the exact image filename
       },
       chromiumOptions: {
         // @ts-ignore - Remotion types don't include all Puppeteer options

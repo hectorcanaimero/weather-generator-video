@@ -7,6 +7,7 @@ import { createServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
 import { initBucket } from "./config/minio.js";
 import { checkRedisHealth } from "./config/redis.js";
+import { initDatabase } from "./config/database.js";
 import { setSocketIOInstance } from "./lib/job-events.js";
 import { initializeBullBoard } from "./config/bull-board.js";
 import { createVideoWorker } from "./workers/video-worker.js";
@@ -100,6 +101,9 @@ app.get("/api/health", async (_req, res) => {
 // Initialize services and start server
 async function startServer() {
   try {
+    // Initialize SQLite database
+    initDatabase();
+
     // Initialize MinIO
     const minioConnected = await initBucket();
     if (minioConnected) {

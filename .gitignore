@@ -6,7 +6,5 @@ dist
 # Ignore the output video from Git but not videos you import into src/.
 out
 
-# AI Generated Weather Images
-public/weather-bg/*.jpg
-public/weather-bg/*.png
-public/weather-bg/manifest.json
+# SQLite database and generation stats
+data

@@ -1,0 +1,138 @@
+{
+  "paris": {
+    "city": "Paris",
+    "temperature": 0,
+    "condition": "sunny",
+    "description": "clear sky",
+    "date": "Friday, December 26, 2025",
+    "filename": "paris-sunny.png"
+  },
+  "santiago": {
+    "city": "Santiago",
+    "temperature": 24,
+    "condition": "sunny",
+    "description": "clear sky",
+    "date": "Friday, December 26, 2025",
+    "filename": "santiago-sunny.png"
+  },
+  "pau-grande": {
+    "city": "Pau Grande",
+    "temperature": 24,
+    "condition": "cloudy",
+    "description": "overcast clouds",
+    "date": "Friday, December 26, 2025",
+    "filename": "pau-grande-cloudy.png"
+  },
+  "santa-rita": {
+    "city": "Santa Rita",
+    "temperature": 26,
+    "condition": "cloudy",
+    "description": "scattered clouds",
+    "date": "Friday, December 26, 2025",
+    "filename": "santa-rita-cloudy.png"
+  },
+  "caracas": {
+    "city": "Caracas",
+    "temperature": 21,
+    "condition": "cloudy",
+    "description": "scattered clouds",
+    "date": "Friday, December 26, 2025",
+    "filename": "caracas-cloudy.png"
+  },
+  "new-york": {
+    "city": "New York",
+    "temperature": -4,
+    "condition": "sunny",
+    "description": "mist",
+    "date": "Saturday, December 27, 2025",
+    "filename": "new-york-sunny.png"
+  },
+  "chicago": {
+    "city": "Chicago",
+    "temperature": -4,
+    "condition": "sunny",
+    "description": "mist",
+    "date": "Monday, December 29, 2025",
+    "filename": "chicago-sunny.png"
+  },
+  "porto-alegre": {
+    "city": "Porto Alegre",
+    "temperature": 27,
+    "condition": "cloudy",
+    "description": "scattered clouds",
+    "date": "segunda-feira, 29 de dezembro de 2025",
+    "filename": "porto-alegre-cloudy.png"
+  },
+  "manaus": {
+    "city": "Manaus",
+    "temperature": 36,
+    "condition": "cloudy",
+    "description": "scattered clouds",
+    "date": "Saturday, December 27, 2025",
+    "filename": "manaus-cloudy.png"
+  },
+  "barquisimeto": {
+    "city": "Barquisimeto",
+    "temperature": 26,
+    "condition": "cloudy",
+    "description": "broken clouds",
+    "date": "Saturday, December 27, 2025",
+    "filename": "barquisimeto-cloudy.png"
+  },
+  "buenos-aires": {
+    "city": "Buenos Aires",
+    "temperature": 34,
+    "condition": "cloudy",
+    "description": "few clouds",
+    "date": "Saturday, December 27, 2025",
+    "filename": "buenos-aires-cloudy.png"
+  },
+  "toronto": {
+    "city": "Toronto",
+    "temperature": -7,
+    "condition": "cloudy",
+    "description": "overcast clouds",
+    "date": "Saturday, December 27, 2025",
+    "filename": "toronto-cloudy.png"
+  },
+  "rondonópolis": {
+    "city": "Rondonópolis",
+    "temperature": 35,
+    "condition": "cloudy",
+    "description": "broken clouds",
+    "date": "Monday, December 29, 2025",
+    "filename": "rondonópolis-cloudy.png"
+  },
+  "a-coruña": {
+    "city": "A Coruña",
+    "temperature": 12,
+    "condition": "cloudy",
+    "description": "few clouds",
+    "date": "Monday, December 29, 2025",
+    "filename": "a-coruña-cloudy.png"
+  },
+  "maturin": {
+    "city": "Maturin",
+    "temperature": 31,
+    "condition": "cloudy",
+    "description": "scattered clouds",
+    "date": "Monday, December 29, 2025",
+    "filename": "maturin-cloudy.png"
+  },
+  "curitiba": {
+    "city": "Curitiba",
+    "temperature": 28,
+    "condition": "cloudy",
+    "description": "broken clouds",
+    "date": "segunda-feira, 29 de dezembro de 2025",
+    "filename": "curitiba-cloudy.png"
+  },
+  "municipio-maracaibo": {
+    "city": "Municipio Maracaibo",
+    "temperature": 30,
+    "condition": "cloudy",
+    "description": "overcast clouds",
+    "date": "segunda-feira, 29 de dezembro de 2025",
+    "filename": "municipio-maracaibo-cloudy.png"
+  }
+}

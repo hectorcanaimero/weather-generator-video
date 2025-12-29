@@ -549,12 +549,12 @@
             </div>
             <!-- Video Preview Section -->
             <div class="w-full lg:w-1/2">
-              <div id="videoPreview" class="hidden h-full">
+              <div id="videoPreview" class="hidden min-h-[600px] lg:h-full">
                 <div
                   class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm h-full flex flex-col"
                 >
                   <div
-                    class="flex-1 bg-gray-50 flex items-center justify-center relative"
+                    class="flex-1 bg-gray-50 flex items-center justify-center relative min-h-[450px]"
                   >
                     <!-- Video Element -->
                     <video
@@ -568,36 +568,79 @@
                     <!-- Loading Animation -->
                     <div
                       id="videoLoading"
-                      class="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 flex flex-col items-center justify-center p-8 gap-8"
+                      class="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 flex flex-col items-center justify-center p-4 md:p-8 gap-6 md:gap-8"
                       style="display: none"
                       role="status"
                       aria-live="polite"
                       aria-label="Video generation in progress"
                     >
-                      <!-- Spinning circles -->
-                      <div class="mb-8">
-                        <div class="relative w-24 h-24 mx-auto">
-                          <div class="absolute inset-0 border-4 border-blue-200 rounded-full"></div>
-                          <div class="absolute inset-0 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                          <div class="absolute inset-2 border-4 border-purple-200 rounded-full"></div>
-                          <div class="absolute inset-2 border-4 border-purple-600 border-b-transparent rounded-full animate-spin"
-                            style="
-                              animation-direction: reverse;
-                              animation-duration: 1s;
-                            "
-                          ></div>
+                      <!-- Circular Progress Bar -->
+                      <div class="relative w-24 h-24 md:w-32 md:h-32">
+                        <svg class="transform -rotate-90 w-24 h-24 md:w-32 md:h-32">
+                          <!-- Background circle -->
+                          <circle
+                            cx="48"
+                            cy="48"
+                            r="42"
+                            stroke="#e5e7eb"
+                            stroke-width="6"
+                            fill="none"
+                            class="md:hidden"
+                          />
+                          <circle
+                            cx="64"
+                            cy="64"
+                            r="56"
+                            stroke="#e5e7eb"
+                            stroke-width="8"
+                            fill="none"
+                            class="hidden md:block"
+                          />
+                          <!-- Progress circle -->
+                          <circle
+                            id="progressCircle"
+                            cx="48"
+                            cy="48"
+                            r="42"
+                            stroke="#3b82f6"
+                            stroke-width="6"
+                            fill="none"
+                            stroke-linecap="round"
+                            stroke-dasharray="263.89"
+                            stroke-dashoffset="263.89"
+                            style="transition: stroke-dashoffset 0.3s ease"
+                            class="md:hidden"
+                          />
+                          <circle
+                            id="progressCircleDesktop"
+                            cx="64"
+                            cy="64"
+                            r="56"
+                            stroke="#3b82f6"
+                            stroke-width="8"
+                            fill="none"
+                            stroke-linecap="round"
+                            stroke-dasharray="351.86"
+                            stroke-dashoffset="351.86"
+                            style="transition: stroke-dashoffset 0.3s ease"
+                            class="hidden md:block"
+                          />
+                        </svg>
+                        <!-- Percentage Text -->
+                        <div class="absolute inset-0 flex items-center justify-center">
+                          <span id="progressPercentage" class="text-xl md:text-2xl font-bold text-gray-800">0%</span>
                         </div>
                       </div>
-      
+
                       <!-- Funny Messages Below -->
-                      <div class="text-center mx-auto">
+                      <div class="text-center mx-auto max-w-md px-4">
                         <p
                           id="funnyMessage"
-                          class="text-lg font-medium text-gray-800 mb-2 min-h-[3rem] flex items-center justify-center"
+                          class="text-base md:text-lg font-medium text-gray-800 mb-2 min-h-[2.5rem] md:min-h-[3rem] flex items-center justify-center"
                         >
                           ✨ Generating your video...
                         </p>
-                        <p class="text-sm text-gray-600" data-i18n="takeMoment">
+                        <p class="text-xs md:text-sm text-gray-600" data-i18n="takeMoment">
                           This might take a moment
                         </p>
                       </div>

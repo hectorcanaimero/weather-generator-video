@@ -1,5 +1,6 @@
 import * as Minio from "minio";
 import fs from "fs";
+import { saveVideo, getRecentVideos as getRecentVideosFromDB } from "./database.js";
 
 /**
  * Sanitize endpoint by removing protocol if present
@@ -96,7 +97,7 @@ export async function initBucket(): Promise<boolean> {
 export async function uploadVideo(
   filePath: string,
   filename: string,
-  metadata: {
+  _metadata?: {
     city: string;
     temperature: number;
     condition: string;
@@ -119,35 +120,48 @@ export async function uploadVideo(
       `      Secret Key: ${minioConfig.secretKey.substring(0, 4)}***`,
     );
 
-    // Prepare metadata
+    // Prepare metadata - only Content-Type
     const metaData = {
       "Content-Type": "video/mp4",
-      "X-City": metadata.city,
-      "X-Temperature": metadata.temperature.toString(),
-      "X-Condition": metadata.condition,
-      "X-Date": metadata.date,
-      "X-Upload-Date": new Date().toISOString(),
     };
 
     console.log(`   Metadata:`, metaData);
 
-    // Upload file
-    const stats = fs.statSync(filePath);
-    const fileStream = fs.createReadStream(filePath);
-
-    console.log(`   Calling minioClient.putObject()...`);
-    const uploadInfo = await minioClient.putObject(
+    // Upload file using fPutObject (more reliable for large files)
+    console.log(`   Calling minioClient.fPutObject() (file-based upload)...`);
+    const uploadInfo = await minioClient.fPutObject(
       BUCKET_NAME,
       filename,
-      fileStream,
-      stats.size,
+      filePath,
       metaData,
     );
-    console.log(`   putObject() completed successfully`);
+    console.log(`   fPutObject() completed successfully`);
 
     // Generate public URL
     console.log(`   Generating public URL...`);
     const url = await getPublicUrl(filename);
+
+    // Save metadata to database
+    if (_metadata) {
+      console.log(`   Saving video metadata to database...`);
+      try {
+        const fileStats = fs.statSync(filePath);
+        saveVideo({
+          filename,
+          url,
+          city: _metadata.city,
+          temperature: _metadata.temperature,
+          condition: _metadata.condition,
+          weather_date: _metadata.date,
+          file_size: fileStats.size,
+          etag: uploadInfo.etag,
+        });
+        console.log(`   ✓ Metadata saved to database`);
+      } catch (dbError) {
+        console.warn(`   ⚠️ Failed to save metadata to database:`, dbError);
+        // Don't fail the upload if database save fails
+      }
+    }
 
     console.log(`✅ ========== UPLOAD SUCCESS ==========`);
     console.log(`   Filename: ${filename}`);
@@ -235,73 +249,29 @@ export async function listRecentVideos(limit: number = 6): Promise<
   }>
 > {
   try {
-    console.log(`📋 Listing recent ${limit} videos from MinIO...`);
+    console.log(`📋 Listing recent ${limit} videos from database...`);
 
-    const objectsList: Array<{
-      name: string;
-      lastModified: Date;
-      size: number;
-    }> = [];
+    // Get videos from database
+    const dbVideos = getRecentVideosFromDB(limit);
 
-    // Stream objects from bucket
-    const stream = minioClient.listObjectsV2(BUCKET_NAME, "", true);
+    // Convert to expected format
+    const videos = dbVideos.map((video) => ({
+      filename: video.filename,
+      url: video.url,
+      size: video.file_size || 0,
+      uploadDate: video.created_at ? new Date(video.created_at) : new Date(),
+      metadata: {
+        city: video.city,
+        temperature: video.temperature.toString(),
+        condition: video.condition,
+        date: video.weather_date,
+      },
+    }));
 
-    for await (const obj of stream) {
-      if (obj.name && obj.name.endsWith(".mp4")) {
-        objectsList.push({
-          name: obj.name,
-          lastModified: obj.lastModified || new Date(),
-          size: obj.size || 0,
-        });
-      }
-    }
-
-    // Sort by last modified date (descending)
-    objectsList.sort(
-      (a, b) => b.lastModified.getTime() - a.lastModified.getTime(),
-    );
-
-    // Take only the requested number
-    const recentObjects = objectsList.slice(0, limit);
-
-    // Fetch metadata for each object
-    const videosWithMetadata = await Promise.all(
-      recentObjects.map(async (obj) => {
-        try {
-          const stat = await minioClient.statObject(BUCKET_NAME, obj.name);
-          const url = await getPublicUrl(obj.name);
-
-          return {
-            filename: obj.name,
-            url,
-            size: obj.size,
-            uploadDate: obj.lastModified,
-            metadata: {
-              city: stat.metaData?.["x-city"],
-              temperature: stat.metaData?.["x-temperature"],
-              condition: stat.metaData?.["x-condition"],
-              date:
-                stat.metaData?.["x-upload-date"] || stat.metaData?.["x-date"],
-            },
-          };
-        } catch (error) {
-          console.error(`Error fetching metadata for ${obj.name}:`, error);
-          const url = await getPublicUrl(obj.name);
-          return {
-            filename: obj.name,
-            url,
-            size: obj.size,
-            uploadDate: obj.lastModified,
-            metadata: {},
-          };
-        }
-      }),
-    );
-
-    console.log(`✅ Found ${videosWithMetadata.length} recent videos`);
-    return videosWithMetadata;
+    console.log(`✅ Found ${videos.length} recent videos`);
+    return videos;
   } catch (error) {
-    console.error(`❌ Error listing videos from MinIO:`, error);
+    console.error(`❌ Error listing videos from database:`, error);
     return [];
   }
 }

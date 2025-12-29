@@ -4,18 +4,23 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { createRateLimiter } from "../middleware/rate-limit.js";
+import {
+  canGenerateImage,
+  incrementGenerated,
+  incrementReused,
+  getLimitInfo,
+} from "../config/generation-limit.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 
-// Rate limiter: 5 image generations per day per IP
+// Rate limiter: 20 image generations per day per IP (soft limit, just logging)
 const imageGenerationLimiter = createRateLimiter({
   windowMs: 24 * 60 * 60 * 1000, // 24 hours
-  max: 20,
-  message:
-    "Has alcanzado el límite de 5 generaciones de imágenes por día. Intenta mañana.",
+  max: 100, // High limit, we use global daily limit instead
+  message: "Demasiadas solicitudes. Por favor, intenta más tarde.",
 });
 
 interface WeatherData {
@@ -25,6 +30,39 @@ interface WeatherData {
   description: string;
   date: string;
 }
+
+/**
+ * Format date in the specified language
+ */
+function formatDateInLanguage(date: Date, language: string): string {
+  const localeMap: Record<string, string> = {
+    en: "en-US",
+    es: "es-ES",
+    pt: "pt-BR",
+  };
+
+  const locale = localeMap[language] || "en-US";
+
+  return date.toLocaleDateString(locale, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+// Endpoint to check generation limit status
+router.get("/status", (req, res) => {
+  const limitInfo = getLimitInfo();
+  return res.json({
+    available: limitInfo.canGenerate,
+    stats: {
+      generated: limitInfo.used,
+      reused: limitInfo.reused,
+      remaining: limitInfo.remaining,
+    },
+  });
+});
 
 router.post("/", imageGenerationLimiter, async (req, res) => {
   const {
@@ -45,6 +83,70 @@ router.post("/", imageGenerationLimiter, async (req, res) => {
   }
 
   try {
+    // FIRST: Check if we already have an image for this city + condition
+    const outputDir = path.join(__dirname, "../../public/weather-bg");
+    const manifestPath = path.join(outputDir, "manifest.json");
+
+    // Ensure directory exists
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
+
+    const cityKey = city.toLowerCase().replace(/\s+/g, "-");
+    const condition = weatherData.condition.toLowerCase();
+    const filename = `${cityKey}-${condition}.png`;
+    const filepath = path.join(outputDir, filename);
+
+    // Load existing manifest
+    let manifest: Record<string, any> = {};
+    if (fs.existsSync(manifestPath)) {
+      manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+    }
+
+    // Check if image already exists
+    if (fs.existsSync(filepath)) {
+      console.log(`♻️ Reusing existing image: ${filename}`);
+      console.log(`   (Same city + weather condition)`);
+
+      // Increment reused counter
+      incrementReused();
+
+      // Format date in user's language
+      const formattedDate = formatDateInLanguage(new Date(), language);
+
+      // Update manifest with current weather data but keep existing filename
+      manifest[cityKey] = {
+        ...weatherData,
+        date: formattedDate,
+        filename,
+      };
+      fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
+
+      return res.json({
+        filename,
+        imageUrl: `/weather-bg/${filename}`,
+        reused: true,
+        weatherData: {
+          ...weatherData,
+          date: formattedDate,
+        },
+      });
+    }
+
+    // Check global daily generation limit BEFORE calling Gemini
+    if (!canGenerateImage()) {
+      const limitInfo = getLimitInfo();
+      console.warn(`⚠️ Daily generation limit reached: ${limitInfo.used}/${limitInfo.maxDaily}`);
+
+      return res.status(503).json({
+        error: "Servicio temporalmente no disponible",
+        message: "Nuestro sistema está experimentando alta demanda en este momento. Por favor, intenta de nuevo más tarde o en unas horas.",
+        retryAfter: "1-2 horas",
+        canRetry: true,
+      });
+    }
+
+    // Only call Gemini API if we need to generate a new image
     console.log(`🎨 Generating AI image for ${city} (${language})...`);
 
     // Weather descriptions in different languages
@@ -113,32 +215,26 @@ IMPORTANT:
       throw new Error("No image data in response");
     }
 
-    const filename = `${city.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}.png`;
-    const outputDir = path.join(__dirname, "../../public/weather-bg");
-
-    // Ensure directory exists
-    if (!fs.existsSync(outputDir)) {
-      fs.mkdirSync(outputDir, { recursive: true });
-    }
-
-    const filepath = path.join(outputDir, filename);
+    // Save the new image
     const imageData = imagePart.inlineData.data;
+    if (!imageData) {
+      throw new Error("No image data in inline data");
+    }
     const buffer = Buffer.from(imageData, "base64");
     fs.writeFileSync(filepath, buffer);
 
     console.log(`✅ Image generated: ${filename}`);
 
+    // Increment generated counter
+    incrementGenerated();
+
+    // Format date in user's language
+    const formattedDate = formatDateInLanguage(new Date(), language);
+
     // Update manifest
-    const manifestPath = path.join(outputDir, "manifest.json");
-    let manifest: Record<string, any> = {};
-
-    if (fs.existsSync(manifestPath)) {
-      manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
-    }
-
-    const key = city.toLowerCase().replace(/\s+/g, "-");
-    manifest[key] = {
+    manifest[cityKey] = {
       ...weatherData,
+      date: formattedDate,
       filename,
     };
 
@@ -149,6 +245,11 @@ IMPORTANT:
     return res.json({
       filename,
       imageUrl: `/weather-bg/${filename}`,
+      reused: false,
+      weatherData: {
+        ...weatherData,
+        date: formattedDate,
+      },
     });
   } catch (error) {
     console.error(`❌ Failed to generate image:`, error);

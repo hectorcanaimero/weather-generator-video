@@ -1,0 +1,19 @@
+
+> creem-year-review@1.0.0 worker
+> tsx server/worker-process.ts
+
+🔧 MinIO Client Configuration:
+   Endpoint: s3.guria.lat
+   Port: 443
+   SSL: true
+   Access Key: TssB**************** (length: 20)
+   Secret Key: ZC2T************************************ (length: 40)
+🚀 Starting video worker process...
+🔧 Video worker started (concurrency: 3)
+📅 Cleanup jobs scheduled (daily at 2 AM and 3 AM)
+🧹 Cleanup worker started
+✅ Worker process started successfully
+✅ Redis connected successfully
+
+🛑 Shutting down workers...
+✅ Workers shut down gracefully
