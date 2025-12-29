@@ -20,6 +20,7 @@ FROM node:20-bookworm-slim
 RUN apt-get update && apt-get install -y \
   chromium \
   ffmpeg \
+  wget \
   ca-certificates \
   fonts-liberation \
   fonts-noto-color-emoji \
