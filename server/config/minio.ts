@@ -87,9 +87,16 @@ export async function uploadVideo(
   }
 ): Promise<{ url: string; etag: string }> {
   try {
-    console.log(`📤 Uploading ${filename} to MinIO...`);
+    console.log(`\n📤 ========== STARTING UPLOAD ==========`);
+    console.log(`   File: ${filename}`);
+    console.log(`   Path: ${filePath}`);
     console.log(`   Bucket: ${BUCKET_NAME}`);
     console.log(`   File size: ${fs.statSync(filePath).size} bytes`);
+    console.log(`   Current MinIO Config:`);
+    console.log(`      Endpoint: ${minioConfig.endPoint}:${minioConfig.port}`);
+    console.log(`      SSL: ${minioConfig.useSSL}`);
+    console.log(`      Access Key: ${minioConfig.accessKey.substring(0, 4)}***`);
+    console.log(`      Secret Key: ${minioConfig.secretKey.substring(0, 4)}***`);
 
     // Prepare metadata
     const metaData = {
@@ -101,10 +108,13 @@ export async function uploadVideo(
       "X-Upload-Date": new Date().toISOString(),
     };
 
+    console.log(`   Metadata:`, metaData);
+
     // Upload file
     const stats = fs.statSync(filePath);
     const fileStream = fs.createReadStream(filePath);
 
+    console.log(`   Calling minioClient.putObject()...`);
     const uploadInfo = await minioClient.putObject(
       BUCKET_NAME,
       filename,
@@ -112,28 +122,45 @@ export async function uploadVideo(
       stats.size,
       metaData
     );
+    console.log(`   putObject() completed successfully`);
 
     // Generate public URL
+    console.log(`   Generating public URL...`);
     const url = await getPublicUrl(filename);
 
-    console.log(`✅ Video uploaded successfully: ${filename}`);
+    console.log(`✅ ========== UPLOAD SUCCESS ==========`);
+    console.log(`   Filename: ${filename}`);
+    console.log(`   URL: ${url}`);
+    console.log(`   ETag: ${uploadInfo.etag}`);
+    console.log(`======================================\n`);
 
     return {
       url,
       etag: uploadInfo.etag,
     };
   } catch (error: any) {
-    console.error(`❌ Error uploading video to MinIO:`);
+    console.error(`\n❌ ========== UPLOAD FAILED ==========`);
+    console.error(`   File: ${filename}`);
     console.error(`   Error: ${error.message}`);
     console.error(`   Code: ${error.code}`);
+    console.error(`   Stack:`, error.stack);
+    console.error(`   Used Config at time of error:`);
+    console.error(`      Endpoint: ${minioConfig.endPoint}:${minioConfig.port}`);
+    console.error(`      SSL: ${minioConfig.useSSL}`);
+    console.error(`      Access Key: ${minioConfig.accessKey.substring(0, 4)}*** (length: ${minioConfig.accessKey.length})`);
+    console.error(`      Secret Key: ${minioConfig.secretKey.substring(0, 4)}*** (length: ${minioConfig.secretKey.length})`);
+    console.error(`      Bucket: ${BUCKET_NAME}`);
+
     if (error.code === "SignatureDoesNotMatch") {
-      console.error(`\n💡 Troubleshooting SignatureDoesNotMatch:`);
-      console.error(`   1. Verify MINIO_ACCESS_KEY and MINIO_SECRET_KEY in Coolify`);
-      console.error(`   2. Check if credentials have spaces or special characters`);
-      console.error(`   3. Ensure endpoint matches: ${minioConfig.endPoint}:${minioConfig.port}`);
-      console.error(`   4. SSL setting: ${minioConfig.useSSL ? "HTTPS" : "HTTP"}`);
-      console.error(`   5. Test credentials with: npm run test:minio\n`);
+      console.error(`\n💡 SignatureDoesNotMatch Troubleshooting:`);
+      console.error(`   This error ONLY occurs when credentials are wrong.`);
+      console.error(`   1. Compare the Access/Secret keys above with your .env file`);
+      console.error(`   2. Check for spaces at start/end of keys in .env`);
+      console.error(`   3. Verify endpoint is correct: ${minioConfig.endPoint}`);
+      console.error(`   4. Test with: npm run test:minio`);
+      console.error(`   5. If test passes but this fails, keys changed between test and now`);
     }
+    console.error(`======================================\n`);
     throw error;
   }
 }
