@@ -70,7 +70,7 @@ services:
       - REDIS_URL=${REDIS_URL}
     volumes:
       - ./out:/app/out
-    command: ["npx", "tsx", "server/worker-process.ts"]
+    command: ["tsx", "server/worker-process.ts"]
     restart: unless-stopped
     dns:
       - 1.1.1.1

@@ -42,7 +42,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev && npm install -g tsx@4.21.0
 
 COPY --from=builder /app/server ./server
 COPY --from=builder /app/src ./src
@@ -63,4 +63,4 @@ ENV NODE_ENV=production \
   REMOTION_DISABLE_UPDATE_CHECK=1 \
   PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
-CMD ["npx", "tsx", "server/index.ts"]
+CMD ["tsx", "server/index.ts"]
