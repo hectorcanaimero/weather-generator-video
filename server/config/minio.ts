@@ -10,14 +10,24 @@ function sanitizeEndpoint(endpoint: string): string {
   return endpoint.replace(/^https?:\/\//, "");
 }
 
-// MinIO client configuration
-const minioClient = new Minio.Client({
+// Log MinIO configuration (hide sensitive parts)
+const minioConfig = {
   endPoint: sanitizeEndpoint(process.env.MINIO_ENDPOINT || "localhost"),
   port: parseInt(process.env.MINIO_PORT || "9000"),
   useSSL: process.env.MINIO_USE_SSL === "true",
   accessKey: process.env.MINIO_ACCESS_KEY || "minioadmin",
   secretKey: process.env.MINIO_SECRET_KEY || "minioadmin",
-});
+};
+
+console.log("🔧 MinIO Client Configuration:");
+console.log(`   Endpoint: ${minioConfig.endPoint}`);
+console.log(`   Port: ${minioConfig.port}`);
+console.log(`   SSL: ${minioConfig.useSSL}`);
+console.log(`   Access Key: ${minioConfig.accessKey.substring(0, 4)}${"*".repeat(Math.max(0, minioConfig.accessKey.length - 4))}`);
+console.log(`   Secret Key: ${minioConfig.secretKey.substring(0, 4)}${"*".repeat(Math.max(0, minioConfig.secretKey.length - 4))}`);
+
+// MinIO client configuration
+const minioClient = new Minio.Client(minioConfig);
 
 const BUCKET_NAME = process.env.MINIO_BUCKET || "weather-videos";
 
@@ -78,6 +88,8 @@ export async function uploadVideo(
 ): Promise<{ url: string; etag: string }> {
   try {
     console.log(`📤 Uploading ${filename} to MinIO...`);
+    console.log(`   Bucket: ${BUCKET_NAME}`);
+    console.log(`   File size: ${fs.statSync(filePath).size} bytes`);
 
     // Prepare metadata
     const metaData = {
@@ -110,8 +122,18 @@ export async function uploadVideo(
       url,
       etag: uploadInfo.etag,
     };
-  } catch (error) {
-    console.error(`❌ Error uploading video to MinIO:`, error);
+  } catch (error: any) {
+    console.error(`❌ Error uploading video to MinIO:`);
+    console.error(`   Error: ${error.message}`);
+    console.error(`   Code: ${error.code}`);
+    if (error.code === "SignatureDoesNotMatch") {
+      console.error(`\n💡 Troubleshooting SignatureDoesNotMatch:`);
+      console.error(`   1. Verify MINIO_ACCESS_KEY and MINIO_SECRET_KEY in Coolify`);
+      console.error(`   2. Check if credentials have spaces or special characters`);
+      console.error(`   3. Ensure endpoint matches: ${minioConfig.endPoint}:${minioConfig.port}`);
+      console.error(`   4. SSL setting: ${minioConfig.useSSL ? "HTTPS" : "HTTP"}`);
+      console.error(`   5. Test credentials with: npm run test:minio\n`);
+    }
     throw error;
   }
 }
